@@ -91,11 +91,14 @@
    STATE
    ============================================================ */
 let A={},images={},qIdx=0,questions=[],reportHtml='',customEquip=[],multiSel=[],editingReturnIdx=null;
-let customerSignature = "";
-function q(id,label,type,opts={}){questions.push({id,label,type,...opts})}
-const isApt=a=>a.connection_type==='חיבור לארון חשמל דירתי';
-const isPub=a=>a.connection_type==='חיבור לארון חשמל ציבורי בבניין';
-const isSplit=a=>a.connection_type==='חיבור דרך פיצול מונה חברת חשמל';
+     let customerSignature = "";
+     function q(id,label,type,opts={}){
+  questions.push({id,label,type,...opts});
+}
+const isApt = a => a.connection_type === 'חיבור לארון חשמל דירתי';
+const isPub = a => a.connection_type === 'חיבור לארון חשמל ציבורי בבניין';
+const isSplit = a => a.connection_type === 'חיבור דרך פיצול מונה חברת חשמל';
+
 /* ============================================================
    QUESTION DEFINITIONS
    ============================================================ */
@@ -300,8 +303,8 @@ function downloadPDF(){
   wrapper.style.position = 'fixed';
   wrapper.style.right = '-9999px';
   wrapper.style.top = '0';
-  wrapper.style.width = '190mm';
-  wrapper.style.maxWidth = '190mm';
+  wrapper.style.width = '195mm';
+  wrapper.style.maxWidth = '195mm';
   wrapper.style.background = '#ffffff';
   wrapper.style.overflow = 'hidden';
 
@@ -452,6 +455,13 @@ function closeSignaturePad(){
   if(overlay) overlay.remove();
 }
    function buildReport(){const conn=A.connection_type||'—',isA=conn==='חיבור לארון חשמל דירתי',isP=conn==='חיבור לארון חשמל ציבורי בבניין',isS=conn==='חיבור דרך פיצול מונה חברת חשמל',pgM=parseInt(A.pg_pipe_meters)||0,marorM=parseInt(A.maror_pipe_meters)||0,trayQty=(pgM+marorM>0)?pgM+marorM+10:'—',mufah=isS&&yes('split_cable')?`סט מופה ${v('split_cable')}`:'',cableM=parseInt(A.cable_total_length)||0,shaftPipe=A.needs_shaft==='כן'&&A.shaft_pipe_length?`צינור מרי חף המתאים להשחלת כבל מסוג ${v('cable_type')} – ${v('shaft_pipe_length')} מטר`:'',groundPipeMeters=(parseInt(A.work_dig)||0)+(parseInt(A.work_lift)||0),floatingPipe=groundPipeMeters>0?`צינור מרי חף המתאים להשחלת כבל מסוג ${v('cable_type')}`:'';const mcbs=Array.isArray(A.mcb_needed)?A.mcb_needed.map(m=>`<tr><td>${escapeHTML(m.name||m)}</td><td>${escapeHTML(v('mcb_models'))}</td><td>${escapeHTML(m.qty||'')}</td><td></td></tr>`).join(''):'';const extraRows=customEquip.map(e=>`<tr><td>${escapeHTML(e.name)}</td><td>${escapeHTML(e.unit||'—')}</td><td>${escapeHTML(e.qty||'—')}</td><td></td></tr>`).join('');const css=`@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap');html,body{background:#fff!important}
+img{
+  max-width:100%;
+  height:auto;
+  display:block;
+  page-break-inside:avoid;
+  break-inside:avoid;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:Arial,'Heebo',sans-serif;
@@ -504,6 +514,8 @@ h1{
   margin:18px 0 10px;
   break-after:avoid;
   width:100%;
+  page-break-after:avoid;
+break-after:avoid;
 }
 .grid{
   display:grid;
@@ -534,6 +546,7 @@ h1{
   white-space:normal;
   word-spacing:normal;
   overflow-wrap:anywhere;
+  word-break:break-word;
 }
 .full{grid-column:1/-1}
 table{
@@ -561,6 +574,16 @@ td{
   overflow-wrap:anywhere;
 }
 tr:nth-child(even) td{background:#fafafa}
+/* ===== PDF PAGE BREAK FIX ===== */
+
+table{
+  page-break-inside:auto;
+}
+
+tr{
+  page-break-inside:avoid;
+  page-break-after:auto;
+}
 .note-box{
   background:#fef3c7;
   border:1px solid #f59e0b;
@@ -608,6 +631,22 @@ ${customerSignature ? `
     <div style="font-size:12px;color:#555;margin-bottom:6px;">חתימת לקוח:</div>
     <img src="${customerSignature}" style="width:100%;max-height:140px;object-fit:contain;">
   </div>
+` : ''}
+${customerSignature ? `
+<div class="section-title">אישור לקוח</div>
+
+<div style="text-align:center;padding:20px 0">
+  <div style="font-size:13px;margin-bottom:10px">
+    אני מאשר/ת שקראתי את סיכום דוח סיור השטח.
+  </div>
+
+  <img src="${customerSignature}"
+       style="max-width:280px;border-bottom:1px solid #333;padding-bottom:6px">
+
+  <div style="font-size:11px;color:#666;margin-top:6px">
+    חתימת לקוח
+  </div>
+</div>
 ` : ''}
 <div class="sigs"><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">חתימת הסוקר</div></div><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">חתימת הלקוח</div></div></div></div></body></html>`}
 function section(title,content){return `<div class="section-title">${escapeHTML(title)}</div><div class="grid">${content}</div>`}function connectionSection(conn,isA,isP,isS){let c='';if(isA)c=fld('מיקום לוח חשמל',v('apt_panel_location'))+fld('סוג מפסק ראשי',v('apt_phase_type'))+fld('גודל מפסק ראשי',A.apt_breaker_size==='—'?v('apt_breaker_size_3'):v('apt_breaker_size'))+fld('זרם פנוי [A]',v('apt_free_current'))+fld('מקום למפסק',v('apt_breaker_space'))+fld('מקום לפחת',v('apt_rcbo_space'))+fldF('הערות',v('apt_notes'));if(isP)c=fld('מיקום לוח ציבורי',v('pub_panel_location'))+fld('גודל מפסק ראשי',v('pub_breaker_size'))+fld('זרם פנוי [A]',v('pub_free_current'))+fld('מקום למפסק',v('pub_breaker_space'))+(A.pub_breaker_space==='לא'?fldF('מיקום התקנת מפסק',v('pub_breaker_location')):'')+fld('מקום לפחת',v('pub_rcbo_space'))+(A.pub_rcbo_space==='לא'?fldF('מיקום התקנת פחת',v('pub_rcbo_location')):'')+fld('חיבור לפסי צבירה',v('pub_busbar'))+fldF('הערות',v('pub_notes'));if(isS)c=fld('סוג מבנה',v('building_type'))+fld('סוג פילר',v('pillar_type'))+fldF('מיקום המונה',v('meter_location'))+fld('סוג מפסק ראשי',v('split_phase_type'))+fld('גודל מפסק ראשי',v('split_breaker_size'))+fld('כבל מזין',v('split_cable'))+fld('מקום ללוח פיצול',v('split_panel_space'))+fld('גודל לוח פיצול',v('split_panel_size'))+fld('הארקה ליד לוח',v('split_grounding'))+fld('מפתח חדר מונים',v('meter_room_key'))+fld('מחזיק המפתח',v('meter_key_holder'))+(A.meter_room_key==='כן'?`<div class="note-box full">⚠️ יש לעדכן את הלקוח שביום ההתקנה נדרש לפתוח את חדר המונים!</div>`:'')+fld('נדרש מופה',v('needs_mufah'));return section('שיטת חיבור: '+conn,c)+imgBlock('pub_panel_photo','תמונת לוח החשמל הציבורי')+imgBlock('pub_busbar_photo','תמונת פסי צבירה / מקור הזנה')+imgBlock('meter_photo','תמונת מיקום המונה')+imgBlock('split_panel_photo','תמונת מיקום לוח הפיצול')+imgBlock('split_grounding_photo','תמונת חיבור הארקה')+imgBlock('apt_panel_photo','תמונת לוח החשמל הדירתי')}
