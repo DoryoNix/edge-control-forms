@@ -37,12 +37,61 @@
 <body>
 <div id="home"><div class="home-header"><div class="logo">Edge Control Ltd</div><h1 class="home-title">סיור שטח<br><span>עמדת טעינה</span></h1><p class="home-sub">מלא את הדוח שלב אחר שלב</p></div><div style="padding:32px 20px;max-width:480px;margin:0 auto;width:100%"><div style="background:white;border-radius:16px;padding:24px;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06)"><div style="font-size:32px;text-align:center;margin-bottom:12px">🔍</div><h2 style="font-size:17px;font-weight:800;text-align:center;margin-bottom:8px">טופס סיור שטח</h2><p style="font-size:13px;color:var(--gray);text-align:center;line-height:1.6">הטופס ינחה אותך שאלה אחר שאלה.<br>בסוף תקבל דוח מסודר להורדה כ־PDF.</p><button class="start-btn" onclick="startSurvey()" style="margin-top:20px;width:100%">התחל סיור שטח ←</button></div></div><div class="home-footer">Edge Control Ltd | מערכת דוחות פנימית</div></div>
 <div id="chat-screen"><div class="chat-header"><button class="back-btn" onclick="goHome()">← חזור</button><span class="chat-title">סיור שטח – עמדת טעינה</span><span class="chat-prog" id="prog-text">0/0</span></div><div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div><div class="messages" id="messages"></div><div class="input-area" id="input-area"></div></div>
-<div id="report-screen"><div class="rep-header"><button class="back-btn" onclick="goHome()">← בית</button><button class="dl-btn" onclick="editFromReport()">✏️ ערוך דוח</button><button class="dl-btn" onclick="downloadHTML()">⬇️ הורד HTML</button><button class="dl-btn green" onclick="downloadPDF()">⬇️ הורד PDF</button><button class="dl-btn" onclick="printRep()">🖨️ הדפס</button></div><iframe id="rep-frame" class="rep-frame"></iframe><div class="report-actions"><button class="edit-report-btn" onclick="editFromReport()">✏️ ערוך דוח</button><button class="dl-btn green" onclick="downloadPDF()">⬇️ הורד PDF</button><button class="dl-btn" onclick="printRep()">🖨️ הדפס</button><button class="dl-btn" onclick="downloadHTML()">⬇️ HTML</button></div></div>
-<script>
+<div id="report-screen">
+  <div class="rep-header">
+    <button class="back-btn" onclick="goHome()">← בית</button>
+
+    <button class="dl-btn" onclick="editFromReport()">
+      ✏️ ערוך דוח
+    </button>
+
+    <button class="dl-btn" onclick="openSignaturePad()">
+      ✍️ חתימת לקוח
+    </button>
+
+    <button class="dl-btn" onclick="downloadHTML()">
+      ⬇️ הורד HTML
+    </button>
+
+    <button class="dl-btn green" onclick="downloadPDF()">
+      ⬇️ הורד PDF
+    </button>
+
+    <button class="dl-btn" onclick="printRep()">
+      🖨️ הדפס
+    </button>
+  </div>
+
+  <iframe id="rep-frame" class="rep-frame"></iframe>
+
+  <div class="report-actions">
+    <button class="edit-report-btn" onclick="editFromReport()">
+      ✏️ ערוך דוח
+    </button>
+
+    <button class="dl-btn" onclick="openSignaturePad()">
+      ✍️ חתימה
+    </button>
+
+    <button class="dl-btn green" onclick="downloadPDF()">
+      ⬇️ הורד PDF
+    </button>
+
+    <button class="dl-btn" onclick="printRep()">
+      🖨️ הדפס
+    </button>
+
+    <button class="dl-btn" onclick="downloadHTML()">
+      ⬇️ HTML
+    </button>
+  </div>
+</div>
+  
 /* ============================================================
    STATE
    ============================================================ */
 let A={},images={},qIdx=0,questions=[],reportHtml='',customEquip=[],multiSel=[],editingReturnIdx=null;
+let customerSignature = "";
 function q(id,label,type,opts={}){questions.push({id,label,type,...opts})}
 const isApt=a=>a.connection_type==='חיבור לארון חשמל דירתי';
 const isPub=a=>a.connection_type==='חיבור לארון חשמל ציבורי בבניין';
@@ -245,35 +294,169 @@ function preparePdfText(root){
   });
 }
 function downloadPDF(){
-  if(!reportHtml)reportHtml=buildReport();
-  const wrapper=document.createElement('div');
-  wrapper.style.position='fixed';
-  wrapper.style.right='-9999px';
-  wrapper.style.top='0';
-  wrapper.style.width='190mm';
-  wrapper.style.maxWidth='190mm';
-  wrapper.style.overflow='hidden';
-  wrapper.innerHTML=reportHtml;document.body.appendChild(wrapper);
-  const target=wrapper.querySelector('#pdf-report')||wrapper;
+  if(!reportHtml) reportHtml = buildReport();
+
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'fixed';
+  wrapper.style.right = '-9999px';
+  wrapper.style.top = '0';
+  wrapper.style.width = '190mm';
+  wrapper.style.maxWidth = '190mm';
+  wrapper.style.background = '#ffffff';
+  wrapper.style.overflow = 'hidden';
+
+  wrapper.innerHTML = reportHtml;
+  document.body.appendChild(wrapper);
+
+  const target = wrapper.querySelector('#pdf-report') || wrapper;
   preparePdfText(target);
-  html2pdf().set({
-    margin:5,
-    filename:fileBase()+'.pdf',
-    image:{type:'jpeg',quality:.98},
-    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',letterRendering:false},
-    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-    pagebreak:{mode:['css','legacy']}
-  }).from(target).save().then(()=>document.body.removeChild(wrapper)).catch(()=>{document.body.removeChild(wrapper);alert('לא ניתן היה להפיק PDF. נסה להוריד HTML או להשתמש בהדפסה.')})
+
+  html2pdf()
+    .set({
+      margin: [6, 6, 6, 6],
+      filename: fileBase() + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 1200
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: {
+        mode: ['css', 'legacy']
+      }
+    })
+    .from(target)
+    .save()
+    .then(() => document.body.removeChild(wrapper))
+    .catch(() => {
+      document.body.removeChild(wrapper);
+      alert('לא ניתן היה להפיק PDF. נסה להשתמש בכפתור הדפסה.');
+    });
 }
 /* ============================================================
    REPORT BUILD
    ============================================================ */
-function buildReport(){const conn=A.connection_type||'—',isA=conn==='חיבור לארון חשמל דירתי',isP=conn==='חיבור לארון חשמל ציבורי בבניין',isS=conn==='חיבור דרך פיצול מונה חברת חשמל',pgM=parseInt(A.pg_pipe_meters)||0,marorM=parseInt(A.maror_pipe_meters)||0,trayQty=(pgM+marorM>0)?pgM+marorM+10:'—',mufah=isS&&yes('split_cable')?`סט מופה ${v('split_cable')}`:'',cableM=parseInt(A.cable_total_length)||0,shaftPipe=A.needs_shaft==='כן'&&A.shaft_pipe_length?`צינור מרי חף המתאים להשחלת כבל מסוג ${v('cable_type')} – ${v('shaft_pipe_length')} מטר`:'',groundPipeMeters=(parseInt(A.work_dig)||0)+(parseInt(A.work_lift)||0),floatingPipe=groundPipeMeters>0?`צינור מרי חף המתאים להשחלת כבל מסוג ${v('cable_type')}`:'';const mcbs=Array.isArray(A.mcb_needed)?A.mcb_needed.map(m=>`<tr><td>${escapeHTML(m.name||m)}</td><td>${escapeHTML(v('mcb_models'))}</td><td>${escapeHTML(m.qty||'')}</td><td></td></tr>`).join(''):'';const extraRows=customEquip.map(e=>`<tr><td>${escapeHTML(e.name)}</td><td>${escapeHTML(e.unit||'—')}</td><td>${escapeHTML(e.qty||'—')}</td><td></td></tr>`).join('');const css=`@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap');html,body{background:#fff!important}
+function openSignaturePad(){
+  const overlay = document.createElement('div');
+  overlay.id = 'signature-overlay';
+  overlay.style.cssText = `
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.65);
+    z-index:999999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+  `;
+
+  overlay.innerHTML = `
+    <div style="background:white;border-radius:16px;padding:18px;width:100%;max-width:520px;direction:rtl;text-align:center;">
+      <h2 style="font-size:18px;color:#1a56db;margin-bottom:8px;">חתימת לקוח</h2>
+      <p style="font-size:13px;color:#555;margin-bottom:12px;">
+        אני מאשר/ת שקראתי את סיכום דוח סיור השטח.
+      </p>
+
+      <canvas id="signature-canvas" width="460" height="180"
+        style="width:100%;height:180px;border:2px solid #e5e7eb;border-radius:12px;background:#fff;touch-action:none;"></canvas>
+
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button onclick="clearSignature()" style="flex:1;padding:10px;border-radius:8px;border:1px solid #999;background:white;font-weight:700;">נקה חתימה</button>
+        <button onclick="saveSignature()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#1a56db;color:white;font-weight:800;">שמור חתימה</button>
+        <button onclick="closeSignaturePad()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#6b7280;color:white;font-weight:700;">ביטול</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  initSignatureCanvas();
+}
+
+function initSignatureCanvas(){
+  const canvas = document.getElementById('signature-canvas');
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#111';
+
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return {
+      x: (touch.clientX - rect.left) * (canvas.width / rect.width),
+      y: (touch.clientY - rect.top) * (canvas.height / rect.height)
+    };
+  }
+
+  function start(e){
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+
+  function move(e){
+    if(!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  }
+
+  function end(e){
+    e.preventDefault();
+    drawing = false;
+  }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseup', end);
+  canvas.addEventListener('mouseleave', end);
+
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end, {passive:false});
+}
+
+function clearSignature(){
+  const canvas = document.getElementById('signature-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function saveSignature(){
+  const canvas = document.getElementById('signature-canvas');
+  customerSignature = canvas.toDataURL('image/png');
+
+  closeSignaturePad();
+
+  reportHtml = buildReport();
+  document.getElementById('rep-frame').srcdoc = reportHtml;
+
+  alert('החתימה נשמרה ונוספה לדוח.');
+}
+
+function closeSignaturePad(){
+  const overlay = document.getElementById('signature-overlay');
+  if(overlay) overlay.remove();
+}
+   function buildReport(){const conn=A.connection_type||'—',isA=conn==='חיבור לארון חשמל דירתי',isP=conn==='חיבור לארון חשמל ציבורי בבניין',isS=conn==='חיבור דרך פיצול מונה חברת חשמל',pgM=parseInt(A.pg_pipe_meters)||0,marorM=parseInt(A.maror_pipe_meters)||0,trayQty=(pgM+marorM>0)?pgM+marorM+10:'—',mufah=isS&&yes('split_cable')?`סט מופה ${v('split_cable')}`:'',cableM=parseInt(A.cable_total_length)||0,shaftPipe=A.needs_shaft==='כן'&&A.shaft_pipe_length?`צינור מרי חף המתאים להשחלת כבל מסוג ${v('cable_type')} – ${v('shaft_pipe_length')} מטר`:'',groundPipeMeters=(parseInt(A.work_dig)||0)+(parseInt(A.work_lift)||0),floatingPipe=groundPipeMeters>0?`צינור מרי חף המתאים להשחלת כבל מסוג ${v('cable_type')}`:'';const mcbs=Array.isArray(A.mcb_needed)?A.mcb_needed.map(m=>`<tr><td>${escapeHTML(m.name||m)}</td><td>${escapeHTML(v('mcb_models'))}</td><td>${escapeHTML(m.qty||'')}</td><td></td></tr>`).join(''):'';const extraRows=customEquip.map(e=>`<tr><td>${escapeHTML(e.name)}</td><td>${escapeHTML(e.unit||'—')}</td><td>${escapeHTML(e.qty||'—')}</td><td></td></tr>`).join('');const css=`@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap');html,body{background:#fff!important}
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:Arial,'Heebo',sans-serif;
   direction:rtl;
-  unicode-bidi:plaintext;
+unicode-bidi:embed;
   color:#000;
   background:#fff;
   padding:14mm;
@@ -286,6 +469,7 @@ body{
   max-width:180mm;
   margin:0 auto;
   overflow:hidden;
+  word-break:break-word;
 }
 .logo-bar{
   display:flex;
@@ -397,23 +581,58 @@ tr:nth-child(even) td{background:#fafafa}
   border-top:2px solid #ddd;
 }
 .sig-box{text-align:center}
-.sig-line{border-bottom:1px solid #333;height:40px;margin-bottom:6px}
-.sig-lbl{font-size:11px;color:#555}
+.sig-line{
+  border-bottom:1px solid #333;
+  height:40px;
+  margin-bottom:6px;
+}
+
+.sig-lbl{
+  font-size:11px;
+  color:#555;
+}
+
 @media print{
-  body{padding:10mm}
-  .report{max-width:180mm}
+  body{
+    padding:10mm;
+  }
+}
 }`;
-return `<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8"><style>${css}</style></head><body><div class="report" id="pdf-report"><div class="logo-bar"><div><h1>Edge Control Ltd</h1><p style="color:#555;font-size:11px">EV Charging Solutions</p></div><div class="company">Imber 24, Petah Tikva, Israel<br>Tel: 073-3318500<br>office@edgecontrol.net<br>www.EdgeControl.co.il</div></div><div style="font-size:18px;font-weight:800;color:#1a56db;margin-bottom:4px">טופס סיור שטח – עמדת טעינה בודדת</div>${section('פרטי סוקר',fld('שם הסוקר',v('reviewer_name'))+fld('תאריך',v('review_date'))+fld('שם החברה',v('company_name'))+fld('שם מתחם',v('site_name')))}${section('פרטי כתובת',fldF('כתובת מלאה',v('address'))+fld('מספר דירה',v('apt_number'))+fld('קומת חנייה',v('parking_floor'))+fld('מספר חנייה',v('parking_number')))}${imgBlock('parking_photo','תמונת החנייה')}${section('פרטי קשר',fld('איש קשר',v('contact_name'))+fld('נייד',v('contact_phone'))+fld('מייל',v('contact_email'))+fld('אינטרנט אלחוטי',v('has_wifi'))+(A.has_wifi==='כן'?fld('שם רשת',v('wifi_name'))+fld('סיסמא',v('wifi_pass')):''))}${section('חיבור למערכת',fld('חיבור למערכת ניהול',v('needs_management'))+fld('אפליקציה',v('app_type')))}${connectionSection(conn,isA,isP,isS)}${routeSection()}${stationSection()}${A.work_description&&A.work_description!=='דלג'?`<div class="section-title">תיאור שלבי העבודה</div><p style="font-size:13px;line-height:1.8;white-space:pre-wrap;padding:4px 0">${escapeHTML(A.work_description)}</p>`:''}<div class="note-box green">📹 יש לצלם סרטון וידאו של מיקום ההתקנה ושל התוואי הנדרש לכבילה!</div>${equipmentTable({cableM,isS,trayQty,pgM,marorM,mcbs,extraRows,mufah,shaftPipe,floatingPipe,groundPipeMeters})}${workTable()}${toolsBlock()}<div class="note-box green" style="margin-top:16px">✅ <strong>הנחיות סימון לטכנאי המתקין:</strong><br>• על המפסק לרשום: <strong>"מפסק לעמדת הטעינה"</strong><br>• על הפחת לרשום: <strong>"פחת לעמדת הטעינה"</strong><br>• בצמוד לעמדת הטעינה להדביק <strong>מדבקה אדומה</strong> ולציין את מקור הזנת החשמל לעמדה</div><div class="sigs"><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">חתימת הסוקר</div></div><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">חתימת הלקוח</div></div></div></div></body></html>`}
+return `<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8"><style>${css}</style></head><body><div class="report" id="pdf-report"><div class="logo-bar"><div><h1>Edge Control Ltd</h1><p style="color:#555;font-size:11px">EV Charging Solutions</p></div><div class="company">Imber 24, Petah Tikva, Israel<br>Tel: 073-3318500<br>office@edgecontrol.net<br>www.EdgeControl.co.il</div></div><div style="font-size:18px;font-weight:800;color:#1a56db;margin-bottom:4px">טופס סיור שטח – עמדת טעינה בודדת</div>${section('פרטי סוקר',fld('שם הסוקר',v('reviewer_name'))+fld('תאריך',v('review_date'))+fld('שם החברה',v('company_name'))+fld('שם מתחם',v('site_name')))}${section('פרטי כתובת',fldF('כתובת מלאה',v('address'))+fld('מספר דירה',v('apt_number'))+fld('קומת חנייה',v('parking_floor'))+fld('מספר חנייה',v('parking_number')))}${imgBlock('parking_photo','תמונת החנייה')}${section('פרטי קשר',fld('איש קשר',v('contact_name'))+fld('נייד',v('contact_phone'))+fld('מייל',v('contact_email'))+fld('אינטרנט אלחוטי',v('has_wifi'))+(A.has_wifi==='כן'?fld('שם רשת',v('wifi_name'))+fld('סיסמא',v('wifi_pass')):''))}${section('חיבור למערכת',fld('חיבור למערכת ניהול',v('needs_management'))+fld('אפליקציה',v('app_type')))}${connectionSection(conn,isA,isP,isS)}${routeSection()}${stationSection()}${A.work_description&&A.work_description!=='דלג'?`<div class="section-title">תיאור שלבי העבודה</div><p style="font-size:13px;line-height:1.8;white-space:pre-wrap;padding:4px 0">${escapeHTML(A.work_description)}</p>`:''}<div class="note-box green">📹 יש לצלם סרטון וידאו של מיקום ההתקנה ושל התוואי הנדרש לכבילה!</div>${equipmentTable({cableM,isS,trayQty,pgM,marorM,mcbs,extraRows,mufah,shaftPipe,floatingPipe,groundPipeMeters})}${workTable()}${toolsBlock()}<div class="note-box green" style="margin-top:16px">✅ <strong>הנחיות סימון לטכנאי המתקין:</strong><br>• על המפסק לרשום: <strong>"מפסק לעמדת הטעינה"</strong><br>• על הפחת לרשום: <strong>"פחת לעמדת הטעינה"</strong><br>• בצמוד לעמדת הטעינה להדביק <strong>מדבקה אדומה</strong> ולציין את מקור הזנת החשמל לעמדה</div>
+${customerSignature ? `
+  <div class="section-title">אישור וחתימת לקוח</div>
+  <div class="note-box green">
+    הלקוח מאשר כי קרא את סיכום דוח סיור השטח.
+  </div>
+  <div style="border:1px solid #ddd;border-radius:8px;padding:12px;margin-top:8px;max-width:360px;">
+    <div style="font-size:12px;color:#555;margin-bottom:6px;">חתימת לקוח:</div>
+    <img src="${customerSignature}" style="width:100%;max-height:140px;object-fit:contain;">
+  </div>
+` : ''}
+<div class="sigs"><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">חתימת הסוקר</div></div><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">חתימת הלקוח</div></div></div></div></body></html>`}
 function section(title,content){return `<div class="section-title">${escapeHTML(title)}</div><div class="grid">${content}</div>`}function connectionSection(conn,isA,isP,isS){let c='';if(isA)c=fld('מיקום לוח חשמל',v('apt_panel_location'))+fld('סוג מפסק ראשי',v('apt_phase_type'))+fld('גודל מפסק ראשי',A.apt_breaker_size==='—'?v('apt_breaker_size_3'):v('apt_breaker_size'))+fld('זרם פנוי [A]',v('apt_free_current'))+fld('מקום למפסק',v('apt_breaker_space'))+fld('מקום לפחת',v('apt_rcbo_space'))+fldF('הערות',v('apt_notes'));if(isP)c=fld('מיקום לוח ציבורי',v('pub_panel_location'))+fld('גודל מפסק ראשי',v('pub_breaker_size'))+fld('זרם פנוי [A]',v('pub_free_current'))+fld('מקום למפסק',v('pub_breaker_space'))+(A.pub_breaker_space==='לא'?fldF('מיקום התקנת מפסק',v('pub_breaker_location')):'')+fld('מקום לפחת',v('pub_rcbo_space'))+(A.pub_rcbo_space==='לא'?fldF('מיקום התקנת פחת',v('pub_rcbo_location')):'')+fld('חיבור לפסי צבירה',v('pub_busbar'))+fldF('הערות',v('pub_notes'));if(isS)c=fld('סוג מבנה',v('building_type'))+fld('סוג פילר',v('pillar_type'))+fldF('מיקום המונה',v('meter_location'))+fld('סוג מפסק ראשי',v('split_phase_type'))+fld('גודל מפסק ראשי',v('split_breaker_size'))+fld('כבל מזין',v('split_cable'))+fld('מקום ללוח פיצול',v('split_panel_space'))+fld('גודל לוח פיצול',v('split_panel_size'))+fld('הארקה ליד לוח',v('split_grounding'))+fld('מפתח חדר מונים',v('meter_room_key'))+fld('מחזיק המפתח',v('meter_key_holder'))+(A.meter_room_key==='כן'?`<div class="note-box full">⚠️ יש לעדכן את הלקוח שביום ההתקנה נדרש לפתוח את חדר המונים!</div>`:'')+fld('נדרש מופה',v('needs_mufah'));return section('שיטת חיבור: '+conn,c)+imgBlock('pub_panel_photo','תמונת לוח החשמל הציבורי')+imgBlock('pub_busbar_photo','תמונת פסי צבירה / מקור הזנה')+imgBlock('meter_photo','תמונת מיקום המונה')+imgBlock('split_panel_photo','תמונת מיקום לוח הפיצול')+imgBlock('split_grounding_photo','תמונת חיבור הארקה')+imgBlock('apt_panel_photo','תמונת לוח החשמל הדירתי')}
 function routeSection(){return section('העברת קו הזנה',fld('אורך כבילה כולל',v('cable_total_length')+' מטר')+fld('תעלות חשמל',v('has_conduits'))+(A.has_conduits==='כן'?fld('מקום בתעלות',v('conduits_space')):'')+fld('מעבר בפירים',v('needs_shaft'))+(A.needs_shaft==='כן'?fld('אורך צינור מרחף לפירים',v('shaft_pipe_length')+' מטר'):'')+fld('קידוח נדרש',v('needs_drilling'))+(A.needs_drilling==='כן'?fld('כמות קידוחים',v('drill_count'))+fldF('מיקום קידוחים',v('drill_location')):''))+(A.needs_drilling==='כן'?`<div class="note-box">⚠️ לפני הקידוח יש לבצע תכנון נכון של מיקום הקידוח ולבדוק שלא קיימים אלמנטים העלולים להיפגע מהקידוח!</div>`:'')+imgBlock('drill_photos','תמונות מיקומי הקידוחים')}
 function stationSection(){return section('מיקום והתקנת עמדה',fld('התקנה על גבי',v('station_mount'))+(A.station_mount==='סטנד שנדרש לספק'?fld('בסיס סטנד',v('stand_base'))+fld('סוג סטנד',v('stand_type')):'')+(A.station_mount==='סטנד שנדרש לספק'&&A.stand_type==='סטנד מותאם אישית'?fldF('פירוט סטנד',v('stand_custom_notes')):''))+imgBlock('station_mount_photo','תמונת מיקום ההתקנה')+section('פרטי עמדת הטעינה',fld('סוג עמדה',v('station_managed'))+fld('הגבלת זרם',v('station_limit'))+(A.station_limit==='כן'?fld('הגבל לאמפר',v('station_limit_amps')):'')+fld('שם חברה',v('station_company'))+fld('דגם',v('station_model'))+fld('סוג חיבור',v('connector_base'))+fld('מודם סלולרי',v('station_modem'))+(A.connector_base==='שקע טעינה מובנה'?fld('כבל ציבורי נדרש',v('socket_public_cable')):'')+(A.connector_base==='שקע טעינה מובנה'&&A.socket_public_cable==='כן'?fld('אורך כבל ציבורי',v('socket_cable_length')):'')+(A.connector_base==='כבל טעינה מובנה'?fld('אורך כבל מובנה',v('builtin_cable_length')):'')+fld('הגבלות בניין',v('building_restrictions'))+(A.building_restrictions==='כן'?fldF('פירוט הגבלות',v('building_restrictions_notes')):''))}
 function equipmentTable(o){return `<div class="section-title">ציוד נדרש להתקנה</div><table><tr><th>פריט</th><th>דגם / סוג</th><th>כמות</th><th>הערות</th></tr>${o.cableM>0?`<tr><td>כבל נחושת ${escapeHTML(v('cable_type'))}</td><td>—</td><td>${o.cableM} מטר</td><td></td></tr>`:''}${o.isS&&yes('split_cable')?`<tr><td>כבל נחושת לפיצול מונה ${escapeHTML(v('split_cable'))}</td><td>—</td><td></td><td></td></tr>`:''}${yes('breaker_qty')?`<tr><td>מפסק פקט 4×35A</td><td>—</td><td>${escapeHTML(v('breaker_qty'))}</td><td></td></tr>`:''}${yes('pg_pipe_meters')?`<tr><td>צינור שרשורי PG (${escapeHTML(v('pg_pipe_color'))})</td><td>—</td><td>${escapeHTML(v('pg_pipe_meters'))} מטר</td><td></td></tr>`:''}${yes('maror_pipe_meters')?`<tr><td>צינור מררון 25 מ״מ</td><td>—</td><td>${escapeHTML(v('maror_pipe_meters'))} מטר</td><td></td></tr>`:''}${o.trayQty!=='—'?`<tr><td>שלה (${escapeHTML(v('tray_type'))})</td><td>—</td><td>${o.trayQty}</td><td>חושב אוטומטית: ${o.pgM}+${o.marorM}+10</td></tr>`:''}${o.mcbs}${yes('rcd_qty')?`<tr><td>ממסר פחת type A 4×40A</td><td>${escapeHTML(v('mcb_models'))}</td><td>${escapeHTML(v('rcd_qty'))}</td><td></td></tr>`:''}${A.meter_needed==='כן'?`<tr><td>מונה חשמל תלת פאזי</td><td>—</td><td>1</td><td>${escapeHTML(v('meter_location_install'))} ${yes('meter_box_waterproof')?'| '+escapeHTML(v('meter_box_waterproof')):''}</td></tr>`:''}${A.panel_size&&A.panel_size!=='לא נדרש'&&A.panel_size!=='דלג'?`<tr><td>לוח חשמל ייעודי ${escapeHTML(v('panel_size_modules'))}</td><td>—</td><td>1</td><td>${escapeHTML(v('panel_size'))}${yes('panel_size_reason')?' | '+escapeHTML(v('panel_size_reason')):''} | ${escapeHTML(v('panel_waterproof'))}</td></tr>`:''}${A.stand_needed==='כן'?`<tr><td>סטנד ייעודי לעמדת טעינה</td><td>${escapeHTML(v('stand_custom'))}</td><td>1</td><td>נדרש לבדוק מלאי או להזמין סטנד בהתאם לעמוד הנדרש</td></tr>`:''}${A.concrete_bags==='כן'?`<tr><td>שקיות בטון</td><td>—</td><td></td><td>${escapeHTML(v('concrete_reason'))}</td></tr>`:''}${A.electrode_needed==='כן'?`<tr><td>אלקטרודה לארקה מקומית + מהדק</td><td>—</td><td>1</td><td>נדרש לקחת להתקנה קונגו לדפיקה של האלקטרודה באדמה</td></tr>`:''}${A.electrode_needed==='כן'&&yes('grounding_wire_meters')?`<tr><td>גיד הארקה 10 ממ״ר</td><td>—</td><td>${escapeHTML(v('grounding_wire_meters'))} מטר</td><td></td></tr>`:''}${o.mufah?`<tr><td>${escapeHTML(o.mufah)}</td><td>—</td><td>1</td><td>לפיצול מונה</td></tr>`:''}${yes('flex_wire_size')?`<tr><td>גיד גמיש – ${escapeHTML(v('flex_wire_size'))}</td><td>—</td><td>${escapeHTML(v('flex_wire_meters'))} מטר</td><td>יש לוודא שיש סופיות מתאימות לגיד הגמיש</td></tr>`:''}${yes('cat_cable')?`<tr><td>כבל רשת ${escapeHTML(v('cat_cable'))}</td><td>—</td><td>${yes('cat_cable_meters')?escapeHTML(v('cat_cable_meters'))+' מטר':''}</td><td></td></tr>`:''}${o.shaftPipe?`<tr><td>${escapeHTML(o.shaftPipe)}</td><td>—</td><td>${escapeHTML(v('shaft_pipe_length'))} מטר</td><td>לטובת מעבר בפירים</td></tr>`:''}${o.floatingPipe?`<tr><td>${escapeHTML(o.floatingPipe)}</td><td>—</td><td>${o.groundPipeMeters} מטר</td><td>חושב אוטומטית לפי חפירה + הרמת משתלבות</td></tr>`:''}${o.extraRows}</table>`}
 function workTable(){const has=parseInt(A.work_dig)>0||parseInt(A.work_lift)>0||parseInt(A.work_concrete)>0||parseInt(A.work_gypsum)>0||A.work_other_name;if(!has)return '';return `<div class="section-title">עבודות לא סטנדרטיות</div><table><tr><th>סוג העבודה</th><th>יחידת מידה</th><th>כמות</th></tr>${parseInt(A.work_dig)>0?`<tr><td>עבודות חפירה</td><td>מטרים</td><td>${A.work_dig}</td></tr>`:''}${parseInt(A.work_lift)>0?`<tr><td>הרמת משתלבות וחפירה</td><td>מטרים</td><td>${A.work_lift}</td></tr>`:''}${parseInt(A.work_concrete)>0?`<tr><td>יציקת בטון לסטנד</td><td>יחידות</td><td>${A.work_concrete}</td></tr>`:''}${parseInt(A.work_gypsum)>0?`<tr><td>עבודות גבס</td><td>${escapeHTML(A.work_gypsum_loc||'—')}</td><td>${A.work_gypsum}</td></tr>`:''}${A.work_other_name?`<tr><td>${escapeHTML(A.work_other_name)}</td><td>${escapeHTML(A.work_other_unit||'—')}</td><td>${escapeHTML(A.work_other_qty||'—')}</td></tr>`:''}</table>`}function toolsBlock(){return Array.isArray(A.special_tools)&&A.special_tools.length?`<div class="section-title">כלי עבודה מיוחדים</div><p style="font-size:13px;padding:6px 0">${escapeHTML(A.special_tools.join(' | '))}${A.ladder_detail?' – '+escapeHTML(A.ladder_detail):''}${A.tools_other?' – '+escapeHTML(A.tools_other):''}</p>`:''}
 function escapeHTML(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}function escapeAttr(s){return escapeHTML(s)}
+function cleanFilePart(value){
+  return (value || '')
+    .toString()
+    .trim()
+    .replace(/[\\/:*?"<>|]/g, '-')
+    .replace(/\s+/g, ' ');
+}
+
 function fileBase(){
-  const safeName = (A.reviewer_name || 'דוח').toString().replace(/[\\/:*?"<>|]/g,'-').trim();
-  const date = A.review_date || new Date().toISOString().slice(0,10);
-  return `סיור_שטח_${safeName}_${date}`;
+  const contact = cleanFilePart(A.contact_name) || 'ללא שם איש קשר';
+  const company = cleanFilePart(A.company_name);
+
+  if(company && company !== '—' && company !== 'דלג'){
+    return `דוח סיור שטח - ${contact} - ${company}`;
+  }
+
+  return `דוח סיור שטח - ${contact}`;
 }
 
 function printRep(){
