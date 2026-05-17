@@ -9,7 +9,7 @@
 <title>Edge Control – סיור שטח עמדת טעינה</title>
 <!-- EC_FORMS_VERSION: V2.4 mobile-pdf-signature-clean -->
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
 /* ============================================================
    Edge Control Forms - Survey Page
@@ -84,7 +84,7 @@ html, body{
     </button>
 
     <button class="dl-btn green" onclick="downloadPDF()">
-      ⬇️ הורד PDF
+  🖨️ שמירה כ־PDF
     </button>
 
     <button class="dl-btn" onclick="printRep()">
@@ -358,119 +358,27 @@ function preparePdfText(root){
   });
 }
 function downloadPDF(){
-  if(!reportHtml) reportHtml = buildReport();
+  if(!reportHtml){
+    reportHtml = buildReport();
+  }
 
-  if(typeof html2canvas === 'undefined' || !(window.jspdf && window.jspdf.jsPDF)){
-    alert('רכיב יצירת PDF לא נטען. נסה לרענן את הדף או להשתמש בכפתור הדפסה.');
+  const pdfWindow = window.open('', '_blank');
+
+  if(!pdfWindow){
+    alert('הדפדפן חסם פתיחת חלון PDF. יש לאפשר Popups בדפדפן.');
     return;
   }
 
-  const parsed = new DOMParser().parseFromString(reportHtml, 'text/html');
-  const report = parsed.querySelector('#pdf-report');
-  const reportStyle = parsed.querySelector('style') ? parsed.querySelector('style').textContent : '';
+  pdfWindow.document.open();
+  pdfWindow.document.write(reportHtml);
+  pdfWindow.document.close();
 
-  if(!report){
-    alert('לא ניתן היה לבנות את הדוח ל־PDF. נסה לרענן את הדף.');
-    return;
-  }
-
-  const exportWrap = document.createElement('div');
-  exportWrap.id = 'pdf-export-wrap';
-  exportWrap.setAttribute('dir','rtl');
-  exportWrap.style.cssText = [
-    'position:absolute',
-    'left:0',
-    'top:0',
-    'width:794px',
-    'min-width:794px',
-    'max-width:794px',
-    'background:#ffffff',
-    'direction:rtl',
-    'opacity:0.01',
-    'z-index:999999',
-    'pointer-events:none',
-    'overflow:visible'
-  ].join(';');
-
-  const styleEl = document.createElement('style');
-  styleEl.textContent = reportStyle + `
-    html,body{margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important;}
-    #pdf-report{
-      width:794px!important;
-      min-width:794px!important;
-      max-width:794px!important;
-      margin:0!important;
-      padding:32px!important;
-      overflow:visible!important;
-      box-sizing:border-box!important;
-      background:#fff!important;
-      direction:rtl!important;
-    }
-    #pdf-report .report{
-      width:100%!important;
-      max-width:none!important;
-      margin:0!important;
-    }
-  `;
-
-  const importedReport = document.importNode(report, true);
-  importedReport.style.width = '794px';
-  importedReport.style.minWidth = '794px';
-  importedReport.style.maxWidth = '794px';
-  importedReport.style.margin = '0';
-  importedReport.style.overflow = 'visible';
-  importedReport.style.background = '#ffffff';
-
-  exportWrap.appendChild(styleEl);
-  exportWrap.appendChild(importedReport);
-  document.body.appendChild(exportWrap);
-
-  preparePdfText(exportWrap);
-
-  html2canvas(exportWrap, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: '#ffffff',
-    width: 794,
-    windowWidth: 794,
-    scrollX: 0,
-    scrollY: 0,
-    x: 0,
-    y: 0
-  }).then(canvas => {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p','mm','a4');
-
-    const pageW = 210;
-    const pageH = 297;
-    const margin = 5;
-    const imgW = pageW - margin * 2;
-    const imgH = canvas.height * imgW / canvas.width;
-    const imgData = canvas.toDataURL('image/jpeg', 0.98);
-
-    let y = margin;
-    let remaining = imgH;
-
-    pdf.addImage(imgData, 'JPEG', margin, y, imgW, imgH, undefined, 'FAST');
-    remaining -= (pageH - margin * 2);
-
-    while(remaining > 0){
-      pdf.addPage();
-      y = margin - (imgH - remaining);
-      pdf.addImage(imgData, 'JPEG', margin, y, imgW, imgH, undefined, 'FAST');
-      remaining -= (pageH - margin * 2);
-    }
-
-    pdf.save(fileBase() + '.pdf');
-  }).catch(err => {
-    console.error('PDF generation failed:', err);
-    alert('לא ניתן היה להפיק PDF. נסה להשתמש בכפתור הדפסה.');
-  }).finally(() => {
-    if(exportWrap && exportWrap.parentNode){
-      exportWrap.parentNode.removeChild(exportWrap);
-    }
-  });
+  setTimeout(() => {
+    pdfWindow.focus();
+    pdfWindow.print();
+  }, 700);
 }
+ 
 /* ============================================================
    REPORT BUILD
    ============================================================ */
