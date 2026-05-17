@@ -234,6 +234,30 @@ function stationSection(){return section('מיקום והתקנת עמדה',fld(
 function equipmentTable(o){return `<div class="section-title">ציוד נדרש להתקנה</div><table><tr><th>פריט</th><th>דגם / סוג</th><th>כמות</th><th>הערות</th></tr>${o.cableM>0?`<tr><td>כבל נחושת ${escapeHTML(v('cable_type'))}</td><td>—</td><td>${o.cableM} מטר</td><td></td></tr>`:''}${o.isS&&yes('split_cable')?`<tr><td>כבל נחושת לפיצול מונה ${escapeHTML(v('split_cable'))}</td><td>—</td><td></td><td></td></tr>`:''}${yes('breaker_qty')?`<tr><td>מפסק פקט 4×35A</td><td>—</td><td>${escapeHTML(v('breaker_qty'))}</td><td></td></tr>`:''}${yes('pg_pipe_meters')?`<tr><td>צינור שרשורי PG (${escapeHTML(v('pg_pipe_color'))})</td><td>—</td><td>${escapeHTML(v('pg_pipe_meters'))} מטר</td><td></td></tr>`:''}${yes('maror_pipe_meters')?`<tr><td>צינור מררון 25 מ״מ</td><td>—</td><td>${escapeHTML(v('maror_pipe_meters'))} מטר</td><td></td></tr>`:''}${o.trayQty!=='—'?`<tr><td>שלה (${escapeHTML(v('tray_type'))})</td><td>—</td><td>${o.trayQty}</td><td>חושב אוטומטית: ${o.pgM}+${o.marorM}+10</td></tr>`:''}${o.mcbs}${yes('rcd_qty')?`<tr><td>ממסר פחת type A 4×40A</td><td>${escapeHTML(v('mcb_models'))}</td><td>${escapeHTML(v('rcd_qty'))}</td><td></td></tr>`:''}${A.meter_needed==='כן'?`<tr><td>מונה חשמל תלת פאזי</td><td>—</td><td>1</td><td>${escapeHTML(v('meter_location_install'))} ${yes('meter_box_waterproof')?'| '+escapeHTML(v('meter_box_waterproof')):''}</td></tr>`:''}${A.panel_size&&A.panel_size!=='לא נדרש'&&A.panel_size!=='דלג'?`<tr><td>לוח חשמל ייעודי ${escapeHTML(v('panel_size_modules'))}</td><td>—</td><td>1</td><td>${escapeHTML(v('panel_size'))}${yes('panel_size_reason')?' | '+escapeHTML(v('panel_size_reason')):''} | ${escapeHTML(v('panel_waterproof'))}</td></tr>`:''}${A.stand_needed==='כן'?`<tr><td>סטנד ייעודי לעמדת טעינה</td><td>${escapeHTML(v('stand_custom'))}</td><td>1</td><td>נדרש לבדוק מלאי או להזמין סטנד בהתאם לעמוד הנדרש</td></tr>`:''}${A.concrete_bags==='כן'?`<tr><td>שקיות בטון</td><td>—</td><td></td><td>${escapeHTML(v('concrete_reason'))}</td></tr>`:''}${A.electrode_needed==='כן'?`<tr><td>אלקטרודה לארקה מקומית + מהדק</td><td>—</td><td>1</td><td>נדרש לקחת להתקנה קונגו לדפיקה של האלקטרודה באדמה</td></tr>`:''}${A.electrode_needed==='כן'&&yes('grounding_wire_meters')?`<tr><td>גיד הארקה 10 ממ״ר</td><td>—</td><td>${escapeHTML(v('grounding_wire_meters'))} מטר</td><td></td></tr>`:''}${o.mufah?`<tr><td>${escapeHTML(o.mufah)}</td><td>—</td><td>1</td><td>לפיצול מונה</td></tr>`:''}${yes('flex_wire_size')?`<tr><td>גיד גמיש – ${escapeHTML(v('flex_wire_size'))}</td><td>—</td><td>${escapeHTML(v('flex_wire_meters'))} מטר</td><td>יש לוודא שיש סופיות מתאימות לגיד הגמיש</td></tr>`:''}${yes('cat_cable')?`<tr><td>כבל רשת ${escapeHTML(v('cat_cable'))}</td><td>—</td><td>${yes('cat_cable_meters')?escapeHTML(v('cat_cable_meters'))+' מטר':''}</td><td></td></tr>`:''}${o.shaftPipe?`<tr><td>${escapeHTML(o.shaftPipe)}</td><td>—</td><td>${escapeHTML(v('shaft_pipe_length'))} מטר</td><td>לטובת מעבר בפירים</td></tr>`:''}${o.floatingPipe?`<tr><td>${escapeHTML(o.floatingPipe)}</td><td>—</td><td>${o.groundPipeMeters} מטר</td><td>חושב אוטומטית לפי חפירה + הרמת משתלבות</td></tr>`:''}${o.extraRows}</table>`}
 function workTable(){const has=parseInt(A.work_dig)>0||parseInt(A.work_lift)>0||parseInt(A.work_concrete)>0||parseInt(A.work_gypsum)>0||A.work_other_name;if(!has)return '';return `<div class="section-title">עבודות לא סטנדרטיות</div><table><tr><th>סוג העבודה</th><th>יחידת מידה</th><th>כמות</th></tr>${parseInt(A.work_dig)>0?`<tr><td>עבודות חפירה</td><td>מטרים</td><td>${A.work_dig}</td></tr>`:''}${parseInt(A.work_lift)>0?`<tr><td>הרמת משתלבות וחפירה</td><td>מטרים</td><td>${A.work_lift}</td></tr>`:''}${parseInt(A.work_concrete)>0?`<tr><td>יציקת בטון לסטנד</td><td>יחידות</td><td>${A.work_concrete}</td></tr>`:''}${parseInt(A.work_gypsum)>0?`<tr><td>עבודות גבס</td><td>${escapeHTML(A.work_gypsum_loc||'—')}</td><td>${A.work_gypsum}</td></tr>`:''}${A.work_other_name?`<tr><td>${escapeHTML(A.work_other_name)}</td><td>${escapeHTML(A.work_other_unit||'—')}</td><td>${escapeHTML(A.work_other_qty||'—')}</td></tr>`:''}</table>`}function toolsBlock(){return Array.isArray(A.special_tools)&&A.special_tools.length?`<div class="section-title">כלי עבודה מיוחדים</div><p style="font-size:13px;padding:6px 0">${escapeHTML(A.special_tools.join(' | '))}${A.ladder_detail?' – '+escapeHTML(A.ladder_detail):''}${A.tools_other?' – '+escapeHTML(A.tools_other):''}</p>`:''}
 function escapeHTML(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}function escapeAttr(s){return escapeHTML(s)}
+function fileBase(){
+  const safeName = (A.reviewer_name || 'דוח').toString().replace(/[\\/:*?"<>|]/g,'-').trim();
+  const date = A.review_date || new Date().toISOString().slice(0,10);
+  return `סיור_שטח_${safeName}_${date}`;
+}
+
+function printRep(){
+  if(!reportHtml) reportHtml = buildReport();
+
+  const w = window.open('', '_blank');
+  if(!w){
+    alert('הדפדפן חסם את פתיחת חלון ההדפסה. אפשר לאפשר Popups או להשתמש בהורדת HTML.');
+    return;
+  }
+
+  w.document.open();
+  w.document.write(reportHtml);
+  w.document.close();
+
+  setTimeout(() => {
+    w.focus();
+    w.print();
+  }, 500);
+}
 </script>
 </body>
 </html>
