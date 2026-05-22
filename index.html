@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edge Control | Internal Forms System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --green:#39b54a;
+  --green-dark:#178c2f;
+  --black:#050505;
+  --bg:#edf2f5;
+  --text:#111827;
+  --muted:#5b6472;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:"Heebo",sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(57,181,74,.18), transparent 22%),
+    linear-gradient(180deg,#f8fafc 0%, #edf2f5 100%);
+  color:var(--text);
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:0;
+  border-bottom:5px solid var(--green);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.98), rgba(244,247,249,.94));
+}
+
+.hero-top{
+  width:100%;
+  min-height:260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-top:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 15% 50%, rgba(57,181,74,.14), transparent 24%),
+    radial-gradient(circle at 85% 30%, rgba(57,181,74,.14), transparent 24%);
+}
+
+.hero-logo-wide{
+  width:min(980px,92%);
+  object-fit:contain;
+  position:relative;
+  z-index:2;
+  filter:
+    drop-shadow(0 20px 45px rgba(0,0,0,.18))
+    drop-shadow(0 0 25px rgba(57,181,74,.15));
+}
+
+.hero-content{
+  text-align:center;
+  padding:0 20px 38px;
+}
+
+.system-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 18px;
+  border-radius:999px;
+  background:#0f172a;
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:16px;
+  box-shadow:0 8px 22px rgba(15,23,42,.18);
+}
+
+.hero h1{
+  margin:0;
+  font-size:54px;
+  font-weight:900;
+  letter-spacing:-1px;
+  color:#0f172a;
+}
+
+.hero p{
+  max-width:900px;
+  margin:14px auto 0;
+  color:#475569;
+  font-size:20px;
+  line-height:1.8;
+}
+
+.wrap{
+  max-width:1240px;
+  margin:auto;
+  padding:40px 20px 50px;
+}
+
+.section{
+  margin-bottom:42px;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  background:linear-gradient(90deg,#050505,#111827);
+  border-radius:18px;
+  padding:18px 24px;
+  border-bottom:4px solid var(--green);
+  box-shadow:0 16px 34px rgba(15,23,42,.16);
+  margin-bottom:22px;
+}
+
+.section-head h2{
+  margin:0;
+  color:#fff;
+  font-size:28px;
+  font-weight:900;
+}
+
+.section-head p{
+  margin:6px 0 0;
+  color:#d1d5db;
+  font-size:15px;
+}
+
+.section-tag{
+  background:rgba(57,181,74,.16);
+  border:1px solid rgba(57,181,74,.55);
+  color:#fff;
+  border-radius:999px;
+  padding:7px 14px;
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.card{
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,.96);
+  border:1px solid #d9dee5;
+  border-radius:26px;
+  padding:28px;
+  text-decoration:none;
+  color:inherit;
+  min-height:260px;
+  box-shadow:0 18px 40px rgba(15,23,42,.09);
+  transition:.22s ease;
+  backdrop-filter:blur(10px);
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  border-color:var(--green);
+  box-shadow:0 22px 50px rgba(15,23,42,.16);
+}
+
+.card:before{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  width:100%;
+  height:7px;
+  background:linear-gradient(90deg,var(--green),var(--green-dark));
+}
+
+.card:after{
+  content:"";
+  position:absolute;
+  left:-55px;
+  bottom:-55px;
+  width:160px;
+  height:160px;
+  background:rgba(57,181,74,.08);
+  border-radius:50%;
+}
+
+.icon{
+  width:66px;
+  height:66px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  background:linear-gradient(180deg,#f0fdf4,#dcfce7);
+  border:1px solid #bbf7d0;
+  margin-bottom:18px;
+  position:relative;
+  z-index:2;
+  box-shadow:0 10px 24px rgba(57,181,74,.18);
+}
+
+.card h3{
+  margin:0 0 10px;
+  font-size:26px;
+  line-height:1.35;
+  font-weight:900;
+  color:#0f172a;
+  position:relative;
+  z-index:2;
+}
+
+.card p{
+  margin:0;
+  line-height:1.8;
+  font-size:16px;
+  color:#4b5563;
+  position:relative;
+  z-index:2;
+}
+
+.btn{
+  margin-top:22px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 18px;
+  border-radius:14px;
+  background:#0f172a;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  position:relative;
+  z-index:2;
+  box-shadow:0 10px 24px rgba(15,23,42,.14);
+}
+
+.card-featured{
+  background:linear-gradient(180deg,#ffffff,#f4fff6);
+  border:2px solid rgba(57,181,74,.55);
+}
+
+.card-featured .btn{
+  background:linear-gradient(90deg,var(--green),var(--green-dark));
+}
+
+.footer{
+  text-align:center;
+  color:#64748b;
+  font-size:14px;
+  padding:12px 20px 34px;
+}
+
+@media(max-width:1050px){
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .hero h1{
+    font-size:44px;
+  }
+}
+
+@media(max-width:720px){
+
+  .hero-top{
+    min-height:180px;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
+
+  .hero p{
+    font-size:16px;
+  }
+
+  .section-head{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .cards{
+    grid-template-columns:1fr;
+  }
+
+  .card{
+    min-height:auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+
+  <div class="hero-top">
+    <img class="hero-logo-wide" src="logo-long.svg" alt="Edge Control">
+  </div>
+
+  <div class="hero-content">
+    <div class="system-badge">Internal Forms System</div>
+
+    <h1>מערכת טפסים ודוחות</h1>
+
+    <p>
+      מערכת מרכזית לניהול דוחות סיור, דוחות ביצוע, טפסי בדיקות חשמל,
+      קריאות שירות ותיעוד פרויקטים של Edge Control.
+    </p>
+  </div>
+
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+
+    <div class="section-head">
+      <div>
+        <h2>טפסי סיור ותכנון מקדים</h2>
+        <p>טפסים מקצועיים להכנת דוחות סיור ותשתיות לפני ביצוע.</p>
+      </div>
+
+      <div class="section-tag">Pre Construction</div>
+    </div>
+
+    <div class="cards">
+
+      <a class="card" href="survey.html">
+        <div class="icon">🔌</div>
+
+        <h3>דוח סיור שטח</h3>
+
+        <p>
+          טופס סיור מקדים להתקנת עמדות טעינה באתר בודד,
+          כולל תשתיות, תמונות, ציוד, הערות לקבלן והפקת PDF.
+        </p>
+
+        <span class="btn">פתח טופס</span>
+      </a>
+
+      <a class="card card-featured" href="municipal_ev_survey_report.html">
+        <div class="icon">🏙️</div>
+
+        <h3>דוח סיור מוניציפאלי</h3>
+
+        <p>
+          דוח מתקדם לפרויקטים עירוניים הכולל חפירות, תעלות,
+          חיבורי חברת חשמל, עבודות במרחב ציבורי ועמדות AC/DC.
+        </p>
+
+        <span class="btn">פתח טופס</span>
+      </a>
+
+      <a class="card" href="edge_control_sedesh.html">
+        <div class="icon">⛽</div>
+
+        <h3>דוח סיור סדש</h3>
+
+        <p>
+          דוח פרויקט לתחנת סדש הכולל עבודות תשתית,
+          רשימות ציוד, דרישות לקבלן, מיתוג והפקת PDF מקצועי.
+        </p>
+
+        <span class="btn">פתח דוח</span>
+      </a>
+
+    </div>
+
+  </section>
+
+  <section class="section">
+
+    <div class="section-head">
+      <div>
+        <h2>טפסי תפעול ושירות</h2>
+        <p>ניהול תקלות, יומני עבודה ותיעוד טכנאים.</p>
+      </div>
+
+      <div class="section-tag">Operations</div>
+    </div>
+
+    <div class="cards">
+
+      <a class="card" href="service.html">
+        <div class="icon">🛠️</div>
+
+        <h3>דוח קריאת טכנאי</h3>
+
+        <p>
+          תיעוד תקלות, פעולות שבוצעו, חלקים,
+          תמונות לפני ואחרי וחתימות לקוח.
+        </p>
+
+        <span class="btn">פתח טופס</span>
+      </a>
+
+      <a class="card" href="worklog.html">
+        <div class="icon">📋</div>
+
+        <h3>יומן עבודה</h3>
+
+        <p>
+          רישום עובדים, שעות עבודה, ציוד,
+          חריגים, משימות והתקדמות באתר.
+        </p>
+
+        <span class="btn">פתח טופס</span>
+      </a>
+
+    </div>
+
+  </section>
+
+  <section class="section">
+
+    <div class="section-head">
+      <div>
+        <h2>בדיקות חשמל והיתרי הפעלה</h2>
+        <p>גישה מהירה לטפסי בדיקות חשמל ומסמכי הפעלה.</p>
+      </div>
+
+      <div class="section-tag">Electrical</div>
+    </div>
+
+    <div class="cards">
+
+      <a class="card" href="electrical-tests/index.html">
+        <div class="icon">⚡</div>
+
+        <h3>טפסי בדיקות חשמל</h3>
+
+        <p>
+          טפסי AC/DC, היתר הפעלה,
+          תוצאות בדיקה ותיעוד מערכות טעינה.
+        </p>
+
+        <span class="btn">פתח תיקייה</span>
+      </a>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="footer">
+  Edge Control Ltd | מערכת דוחות פנימית
+</footer>
+
+</body>
+</html>
