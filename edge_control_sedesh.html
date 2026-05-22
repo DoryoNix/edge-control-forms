@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Edge Control – דוח סיור שטח סדש</title>
+
+  <style>
+    :root{
+      --edge-green:#39b54a;
+      --edge-dark:#050505;
+      --edge-gray:#f4f6f8;
+      --edge-border:#d9dee5;
+      --edge-text:#1f2933;
+      --edge-muted:#697386;
+      --edge-blue:#0f172a;
+      --danger:#b42318;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,"Heebo",sans-serif;
+      background:#eef2f5;
+      color:var(--edge-text);
+      direction:rtl;
+      line-height:1.55;
+    }
+
+    .app-shell{
+      max-width:1180px;
+      margin:0 auto;
+      padding:18px;
+    }
+
+    .topbar{
+      background:#fff;
+      border:1px solid var(--edge-border);
+      border-radius:18px;
+      padding:18px 22px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      box-shadow:0 8px 28px rgba(15,23,42,.08);
+      margin-bottom:18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand img{
+      width:145px;
+      max-height:70px;
+      object-fit:contain;
+      border-radius:10px;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:24px;
+      font-weight:800;
+      color:#111827;
+    }
+
+    .brand p{
+      margin:3px 0 0;
+      color:var(--edge-muted);
+      font-size:14px;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-start;
+    }
+
+    button{
+      border:0;
+      border-radius:12px;
+      padding:11px 16px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .btn-primary{
+      background:var(--edge-green);
+      color:white;
+    }
+
+    .btn-secondary{
+      background:#111827;
+      color:white;
+    }
+
+    .btn-light{
+      background:#e5e7eb;
+      color:#111827;
+    }
+
+    .btn-danger{
+      background:#fee4e2;
+      color:var(--danger);
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:white;
+      border:1px solid var(--edge-border);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 8px 26px rgba(15,23,42,.06);
+    }
+
+    .section-header{
+      background:#050505;
+      color:white;
+      padding:11px 16px;
+      font-weight:800;
+      border-bottom:3px solid var(--edge-green);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .section-header span{
+      font-size:15px;
+    }
+
+    .section-body{
+      padding:16px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    label{
+      font-size:13px;
+      font-weight:800;
+      color:#334155;
+    }
+
+    input,select,textarea{
+      width:100%;
+      border:1px solid var(--edge-border);
+      background:#fff;
+      border-radius:11px;
+      padding:10px 11px;
+      font-size:15px;
+      font-family:inherit;
+      color:#111827;
+      outline:none;
+    }
+
+    textarea{
+      min-height:92px;
+      resize:vertical;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--edge-green);
+      box-shadow:0 0 0 3px rgba(57,181,74,.12);
+    }
+
+    .note-box{
+      background:#f8fafc;
+      border:1px dashed #cbd5e1;
+      border-radius:14px;
+      padding:13px 14px;
+      color:#475569;
+      font-size:14px;
+    }
+
+    .manual-equipment-row{
+      display:grid;
+      grid-template-columns:2fr 1fr 2fr auto;
+      gap:10px;
+      align-items:end;
+      margin-bottom:10px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      font-size:14px;
+    }
+
+    th{
+      background:#f1f5f9;
+      color:#111827;
+      font-weight:800;
+    }
+
+    th,td{
+      border:1px solid #d8dee6;
+      padding:8px 10px;
+      vertical-align:top;
+      text-align:right;
+    }
+
+    .report{
+      background:white;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--edge-border);
+    }
+
+    .report-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      border-bottom:3px solid var(--edge-green);
+      padding-bottom:12px;
+      margin-bottom:14px;
+    }
+
+    .company-details{
+      font-size:12px;
+      color:#334155;
+      line-height:1.4;
+    }
+
+    .report-logo{
+      width:140px;
+      max-height:65px;
+      object-fit:contain;
+    }
+
+    .report-title{
+      text-align:center;
+      margin:10px 0 16px;
+      color:#12802b;
+      font-size:21px;
+      font-weight:900;
+    }
+
+    .report-section-title{
+      background:#050505;
+      color:#fff;
+      border-bottom:3px solid var(--edge-green);
+      padding:7px 10px;
+      font-weight:900;
+      margin-top:14px;
+      font-size:14px;
+    }
+
+    .finish-list{
+      margin:0;
+      padding:10px 24px 10px 10px;
+    }
+
+    .finish-list li{
+      margin-bottom:5px;
+    }
+
+    .print-only{
+      display:none;
+    }
+
+    .muted{
+      color:var(--edge-muted);
+      font-size:13px;
+    }
+
+    .equipment-preview{
+      margin-top:12px;
+    }
+
+    @media(max-width:900px){
+      .topbar,.report-head{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .grid,.grid-3,.grid-2{
+        grid-template-columns:1fr;
+      }
+
+      .manual-equipment-row{
+        grid-template-columns:1fr;
+      }
+
+      .actions{
+        width:100%;
+      }
+
+      button{
+        width:100%;
+      }
+    }
+
+    @page{ size:A4; margin:8mm; }
+
+    body.print-mode .topbar,
+    body.print-mode .form-area{
+      display:none!important;
+    }
+
+    body.print-mode{
+      background:white;
+    }
+
+    body.print-mode .app-shell{
+      max-width:none;
+      padding:0;
+    }
+
+    body.print-mode .report{
+      border:0;
+      box-shadow:none;
+      border-radius:0;
+      padding:0;
+    }
+
+    @media print{
+      body{
+        background:white;
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+      }
+
+      .app-shell{
+        max-width:none;
+        padding:0;
+      }
+
+      .topbar,.form-area,.no-print{
+        display:none!important;
+      }
+
+      .print-only{
+        display:block;
+      }
+
+      .report{
+        border:0;
+        box-shadow:none;
+        border-radius:0;
+        padding:0;
+      }
+
+      table{
+        page-break-inside:auto;
+        font-size:11px;
+      }
+
+      tr{
+        page-break-inside:avoid;
+        page-break-after:auto;
+      }
+
+      .report-section-title{
+        page-break-after:avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <div class="topbar no-print">
+      <div class="brand">
+        <img src="assets/img/edge-logo.jpg" alt="Edge Control Logo">
+        <div>
+          <h1>דוח סיור שטח – סדש עפולה</h1>
+          <p>דוח מקדים לקבלן כולל רשימת ציוד אוטומטית ודרישות עבודות גמר</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnUpdate" class="btn-primary" type="button">עדכן דוח</button>
+        <button id="btnPrint" class="btn-secondary" type="button">יצירת PDF / הדפסה</button>
+        <button id="btnAddTop" class="btn-light" type="button">+ הוסף ציוד ידני</button>
+      </div>
+    </div>
+
+    <div class="layout form-area">
+
+      <section class="card">
+        <div class="section-header"><span>1. נתוני חיבור קיים</span></div>
+        <div class="section-body">
+          <div class="grid">
+            <div class="field">
+              <label>שם המבקר</label>
+              <input id="visitorName" value="דור אוריון">
+            </div>
+            <div class="field">
+              <label>תאריך</label>
+              <input id="visitDate" type="date" value="2026-05-14">
+            </div>
+            <div class="field">
+              <label>שם התחנה</label>
+              <input id="siteName" value="סדש עפולה">
+            </div>
+            <div class="field">
+              <label>כתובת התחנה</label>
+              <input id="siteAddress" value="הבנים 1, עפולה">
+            </div>
+            <div class="field">
+              <label>גודל החיבור הקיים</label>
+              <input id="existingConnection" value="3×80 אמפר">
+            </div>
+            <div class="field">
+              <label>מיקום מונה חח״י</label>
+              <input id="meterLocation" value="בתוך התחנה">
+            </div>
+            <div class="field">
+              <label>מדידת זרם בזמן אמת</label>
+              <input id="currentMeasure" value="לא נמדד">
+            </div>
+            <div class="field">
+              <label>נדרש ניתוק חשמל?</label>
+              <select id="powerShutdown">
+                <option selected>כן</option>
+                <option>לא</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:12px">
+            <label>פירוט ניתוק חשמל</label>
+            <textarea id="shutdownDetails">לטובת התקנת מפסק ייעודי לעמדת הטעינה נדרש להוריד את החשמל בתחנה.</textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>2. תצורת חיבור והעבודה הנדרשת</span></div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="field">
+              <label>תצורת חיבור הזנה לעמדת הטעינה</label>
+              <textarea id="feedConfig">חיבור הזנת עמדת הטעינה מהלוח הראשי של התחנה.</textarea>
+            </div>
+            <div class="field">
+              <label>תיאור העבודה הנדרשת</label>
+              <textarea id="workDescription">לשים לב שיש גנרטור פעיל בתחנה. יש לכבות אותו וגם את המפסק שלו בלוח החשמל הראשי. יש להתקין מפסק מא״ז 3×63A בלוח לטובת עמדת טעינה Mini DC 30kW.</textarea>
+            </div>
+          </div>
+
+          <div class="note-box" style="margin-top:12px">
+            הערה: תיאור תוואי מפורט לא מופיע בדוח זה מאחר ונשלח לקבלן סרטון שטח משלים יחד עם הדוח.
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>3. פירוט עמדת הטעינה</span></div>
+        <div class="section-body">
+          <div class="grid">
+            <div class="field">
+              <label>כמות עמדות DC</label>
+              <input id="dcQty" type="number" value="1">
+            </div>
+            <div class="field">
+              <label>הספק עמדה [kW]</label>
+              <input id="chargerKw" type="number" value="30">
+            </div>
+            <div class="field">
+              <label>כמות מחברים / אקדחים</label>
+              <input id="connectorQty" value="אקדח טעינה אחד">
+            </div>
+            <div class="field">
+              <label>אופן התקנת העמדה</label>
+              <select id="chargerInstallType">
+                <option selected>סטנד</option>
+                <option>קיר</option>
+                <option>בסיס בטון</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>גודל / מידות בסיס</label>
+              <input id="baseSize" value="60×60">
+            </div>
+            <div class="field">
+              <label>דגם עמדת הטעינה</label>
+              <input id="chargerModel" value="Star Charge Mini DC 30kW">
+            </div>
+            <div class="field">
+              <label>ספק</label>
+              <input id="supplierName" value="כהנא">
+            </div>
+            <div class="field">
+              <label>סוג מחבר</label>
+              <input id="connectorType" value="CCS2 מובנה">
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:12px">
+            <label>הערות להתקנת העמדה</label>
+            <textarea id="chargerNotes">התקנת העמדה על גבי סטנד. קיים משטח בטון במיקום ההתקנה.</textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>4. חיבור הזנה לעמדת הטעינה</span></div>
+        <div class="section-body">
+          <div class="grid">
+            <div class="field">
+              <label>סוג כבל הזנה</label>
+              <select id="cableType">
+                <option selected>N2XY נחושת</option>
+                <option>NA2XY אלומיניום</option>
+                <option>גידים חד-גידיים PVC</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>שטח חתך כבל</label>
+              <input id="cableSection" value="5×16">
+            </div>
+            <div class="field">
+              <label>אורך כבל [מטר]</label>
+              <input id="cableLength" type="number" value="30">
+            </div>
+            <div class="field">
+              <label>קוטר צינור קוברה</label>
+              <input id="cobraDiameter" value="50 מ״מ">
+            </div>
+            <div class="field">
+              <label>אורך צינור קוברה [מטר]</label>
+              <input id="cobraLength" type="number" value="5">
+            </div>
+            <div class="field">
+              <label>אופן חיבור הכבל לעמדה</label>
+              <select id="chargerConnectionMethod">
+                <option selected>חיבור ישיר לעמדת הטעינה</option>
+                <option>חיבור באמצעות נעלי כבל</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>אופן העברת הכבל</label>
+              <input id="cableRouteMethod" value="צינור קוברה + תעלת פח סגורה + שימוש בתשתית קיימת">
+            </div>
+            <div class="field">
+              <label>אורך תעלת פח סגורה [מטר]</label>
+              <input id="metalTrayLength" type="number" value="">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>5. חיבור הזנה בלוח המזין</span></div>
+        <div class="section-body">
+          <div class="grid">
+            <div class="field">
+              <label>נדרש להשתיל מפסק?</label>
+              <select id="breakerRequired">
+                <option selected>כן</option>
+                <option>לא</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>סוג מפסק נדרש</label>
+              <select id="breakerType">
+                <option selected>MCB</option>
+                <option>MCCB</option>
+                <option>מא״ז</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>גודל מפסק נדרש</label>
+              <input id="breakerSize" value="3×63A">
+            </div>
+            <div class="field">
+              <label>נדרש מהדק לפס דין?</label>
+              <select id="dinTerminalRequired">
+                <option selected>כן</option>
+                <option>לא</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>פירוט מהדק לפס דין</label>
+              <input id="dinTerminalDetails" value="לגיד 16 – 3 אפור ואחד כחול">
+            </div>
+            <div class="field">
+              <label>נדרש גיד גמיש לחיווט מפסק?</label>
+              <select id="flexWireRequired">
+                <option selected>כן</option>
+                <option>לא</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>פירוט גיד גמיש</label>
+              <input id="flexWireDetails" value="10 ממ״ר">
+            </div>
+            <div class="field">
+              <label>אביזרי כניסה / גלנדים / מתאמים</label>
+              <input id="cableAccessories" value="מתאם מזלג לפס אפס והארקה">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>6. מיתוג מתחם הטעינה</span></div>
+        <div class="section-body">
+          <div class="grid">
+            <div class="field">
+              <label>צביעת חניה</label>
+              <select id="parkingPaint">
+                <option selected>כן</option>
+                <option>לא</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>כמות חניות לצביעה</label>
+              <input id="parkingPaintQty" type="number" value="1">
+            </div>
+            <div class="field">
+              <label>הוראות הפעלה – כמות</label>
+              <input id="instructionSignQty" type="number" value="1">
+            </div>
+            <div class="field">
+              <label>סוג וגודל שלט</label>
+              <input id="instructionSignType" value="שלט קטן לעמדת הטעינה">
+            </div>
+            <div class="field">
+              <label>התקנת שילוט</label>
+              <input id="signInstallMethod" value="דבק דו צדדי או סיליקון">
+            </div>
+            <div class="field">
+              <label>שבלונות לסימון לוגו</label>
+              <input id="logoStencil" value="לוגו">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>7. מיגון וניהול</span></div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="field">
+              <label>אמצעי מיגון נדרש?</label>
+              <input id="protectionRequired" value="לא נדרש">
+            </div>
+            <div class="field">
+              <label>חיבור למערכת הניהול</label>
+              <input id="managementConnection" value="סים סלולרי">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>8. רשימת ציוד אוטומטית + ציוד ידני</span></div>
+        <div class="section-body">
+          <div class="note-box">
+            רשימת הציוד נוצרת אוטומטית לפי הנתונים שמולאו בטופס. ניתן להוסיף שורות ידניות לציוד נוסף שלא מופיע אוטומטית.
+          </div>
+
+          <div id="manualEquipmentRows" style="margin-top:14px"></div>
+
+          <button id="btnAddEquipment" class="btn-light" type="button">+ הוסף שורת ציוד ידנית</button>
+
+          <div class="equipment-preview">
+            <h3 style="margin:14px 0 8px">תצוגה מקדימה של רשימת הציוד</h3>
+            <div id="equipmentPreview"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header"><span>9. דרישות לעבודות גמר</span></div>
+        <div class="section-body">
+          <div class="field">
+            <label>דרישות עבודות גמר שיופיעו בדוח לקבלן</label>
+            <textarea id="finishRequirements" style="min-height:160px">כל הכבילה תבוצע בצורה ישרה, מסודרת ומקובעת היטב.
+יש לבצע איטום מלא לכל קידוח, מעבר כבל או חדירה למבנה.
+יש לסמן את המפסק החדש בלוח החשמל בצורה ברורה ועמידה.
+יש לוודא חיזוק וייצוב מלא של הסטנד ועמדת הטעינה.
+יש להחזיר את אזור העבודה למצב תקין, נקי ובטיחותי.
+יש לפנות פסולת, שאריות כבלים, קידוחים ואריזות מאזור העבודה.
+יש לוודא שכל המכסים, התעלות, הברגים והאביזרים סגורים ומחוזקים.
+יש לבצע את העבודה בהתאם לחוק החשמל, כללי הבטיחות והנחיות מנהל הפרויקט.
+בסיום העבודה יש לעדכן את מנהל הפרויקט ולאשר שהאתר מוכן לבדיקה / הפעלה.</textarea>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <section class="report" id="report">
+      <div class="report-head">
+        <div class="company-details">
+          <strong>Edge Control Ltd - EV Charging</strong><br>
+          Imber 24, Petah Tikva, Israel<br>
+          Tel: 073-3318500<br>
+          E-mail: office@edgecontrol.net<br>
+          Web: www.EdgeControl.co.il
+        </div>
+        <img class="report-logo" src="assets/img/edge-logo.jpg" alt="Edge Control Logo">
+      </div>
+
+      <div class="report-title">דוח סיור לבחינת היתכנות התקנת עמדת טעינה מהירה – תחנת דלק סדש</div>
+
+      <div id="reportContent"></div>
+
+      <div class="muted" style="margin-top:18px;text-align:left">
+        הופק מתוך מערכת הטפסים של Edge Control
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    function createPdf(){
+      generateReport();
+      document.body.classList.add('print-mode');
+      setTimeout(function(){ window.print(); }, 250);
+    }
+
+    window.addEventListener('beforeprint', function(){
+      generateReport();
+      document.body.classList.add('print-mode');
+    });
+
+    window.addEventListener('afterprint', function(){
+      document.body.classList.remove('print-mode');
+    });
+
+    function val(id){
+      const el = document.getElementById(id);
+      return el ? (el.value || '').trim() : '';
+    }
+
+    function addManualEquipmentRow(item = '', qty = '', notes = ''){
+      const wrap = document.getElementById('manualEquipmentRows');
+      const row = document.createElement('div');
+      row.className = 'manual-equipment-row';
+      row.innerHTML = `
+        <div class="field">
+          <label>פריט ציוד</label>
+          <input class="manual-item" value="${escapeHtml(item)}" placeholder="לדוגמה: ברגי בטון / קופסת חיבורים / מתאם מיוחד">
+        </div>
+        <div class="field">
+          <label>כמות</label>
+          <input class="manual-qty" value="${escapeHtml(qty)}" placeholder="לדוגמה: 1 / 5 מטר">
+        </div>
+        <div class="field">
+          <label>הערות</label>
+          <input class="manual-notes" value="${escapeHtml(notes)}" placeholder="הערה לקבלן">
+        </div>
+        <button type="button" class="btn-danger manual-delete">מחק</button>
+      `;
+      wrap.appendChild(row);
+
+      row.querySelectorAll('input').forEach(function(input) {
+        input.addEventListener('input', generateReport);
+      });
+
+      var deleteBtn = row.querySelector('.manual-delete');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(){
+          row.remove();
+          generateReport();
+        });
+      }
+
+      generateReport();
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/\"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+    }
+
+    function getManualEquipment(){
+      const rows = [...document.querySelectorAll('.manual-equipment-row')];
+      return rows.map(row => ({
+        item: row.querySelector('.manual-item').value.trim(),
+        qty: row.querySelector('.manual-qty').value.trim(),
+        notes: row.querySelector('.manual-notes').value.trim(),
+        source: 'ידני'
+      })).filter(x => x.item || x.qty || x.notes);
+    }
+
+    function buildAutoEquipment(){
+      const equipment = [];
+
+      const cableType = val('cableType');
+      const cableSection = val('cableSection');
+      const cableLength = val('cableLength');
+      const cobraDiameter = val('cobraDiameter');
+      const cobraLength = val('cobraLength');
+      const metalTrayLength = val('metalTrayLength');
+      const breakerRequired = val('breakerRequired');
+      const breakerType = val('breakerType');
+      const breakerSize = val('breakerSize');
+      const dinTerminalRequired = val('dinTerminalRequired');
+      const dinTerminalDetails = val('dinTerminalDetails');
+      const flexWireRequired = val('flexWireRequired');
+      const flexWireDetails = val('flexWireDetails');
+      const cableAccessories = val('cableAccessories');
+      const chargerInstallType = val('chargerInstallType');
+      const dcQty = val('dcQty');
+      const baseSize = val('baseSize');
+      const parkingPaint = val('parkingPaint');
+      const parkingPaintQty = val('parkingPaintQty');
+      const instructionSignQty = val('instructionSignQty');
+      const instructionSignType = val('instructionSignType');
+      const signInstallMethod = val('signInstallMethod');
+
+      if(cableType || cableSection || cableLength){
+        equipment.push({
+          item:`כבל הזנה ${cableType} ${cableSection}`,
+          qty: cableLength ? `${cableLength} מטר` : '',
+          notes:'לפי התוואי שאושר בסיור',
+          source:'אוטומטי'
+        });
+      }
+
+      if(cobraLength && Number(cobraLength) > 0){
+        equipment.push({
+          item:`צינור קוברה ${cobraDiameter}`,
+          qty:`${cobraLength} מטר`,
+          notes:'להעברת הכבל בתוואי החיצוני / התת-קרקעי',
+          source:'אוטומטי'
+        });
+      }
+
+      if(metalTrayLength && Number(metalTrayLength) > 0){
+        equipment.push({
+          item:'תעלת פח סגורה כולל מכסה',
+          qty:`${metalTrayLength} מטר`,
+          notes:'כולל אביזרי עיגון וסגירה',
+          source:'אוטומטי'
+        });
+      }
+
+      if(breakerRequired === 'כן'){
+        equipment.push({
+          item:`מפסק ${breakerType} ${breakerSize}`,
+          qty:'1 יח׳',
+          notes:'להתקנה בלוח המזין עבור עמדת הטעינה',
+          source:'אוטומטי'
+        });
+      }
+
+      if(dinTerminalRequired === 'כן'){
+        equipment.push({
+          item:'מהדקים לפס DIN',
+          qty:'לפי הצורך',
+          notes:dinTerminalDetails,
+          source:'אוטומטי'
+        });
+      }
+
+      if(flexWireRequired === 'כן'){
+        equipment.push({
+          item:`גיד גמיש לחיווט מפסק ${flexWireDetails}`,
+          qty:'לפי הצורך',
+          notes:'לחיווט פנימי בלוח החשמל',
+          source:'אוטומטי'
+        });
+      }
+
+      if(cableAccessories){
+        equipment.push({
+          item:'אביזרי חיבור / כניסה לכבל',
+          qty:'לפי הצורך',
+          notes:cableAccessories,
+          source:'אוטומטי'
+        });
+      }
+
+      if(chargerInstallType === 'סטנד'){
+        equipment.push({
+          item:`סטנד לעמדת טעינה + אביזרי עיגון`,
+          qty: dcQty ? `${dcQty} יח׳` : '1 יח׳',
+          notes: baseSize ? `התאמה לבסיס ${baseSize}` : '',
+          source:'אוטומטי'
+        });
+      }
+
+      if(Number(instructionSignQty) > 0){
+        equipment.push({
+          item:instructionSignType || 'שלט הוראות הפעלה',
+          qty:`${instructionSignQty} יח׳`,
+          notes:signInstallMethod ? `אופן התקנה: ${signInstallMethod}` : '',
+          source:'אוטומטי'
+        });
+      }
+
+      if(parkingPaint === 'כן'){
+        equipment.push({
+          item:'צביעת חניה / סימון מתחם טעינה',
+          qty: parkingPaintQty ? `${parkingPaintQty} חניה` : '1 חניה',
+          notes:'כולל סימון בהתאם להנחיות מנהל הפרויקט',
+          source:'אוטומטי'
+        });
+      }
+
+      equipment.push({
+        item:'חומר איטום למעברי כבל / קידוחים',
+        qty:'לפי הצורך',
+        notes:'איטום מלא לאחר מעבר הכבל',
+        source:'אוטומטי'
+      });
+
+      return equipment;
+    }
+
+    function equipmentTable(items){
+      if(!items.length) return '<div class="note-box">לא הוגדרה רשימת ציוד.</div>';
+
+      return `
+        <table>
+          <thead>
+            <tr>
+              <th style="width:6%">#</th>
+              <th style="width:34%">פריט</th>
+              <th style="width:18%">כמות</th>
+              <th>הערות</th>
+              <th style="width:12%">מקור</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items.map((x,i)=>`
+              <tr>
+                <td>${i+1}</td>
+                <td>${escapeHtml(x.item)}</td>
+                <td>${escapeHtml(x.qty)}</td>
+                <td>${escapeHtml(x.notes)}</td>
+                <td>${escapeHtml(x.source)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function infoTable(rows){
+      return `
+        <table>
+          <tbody>
+            ${rows.map(pair=>`
+              <tr>
+                <th>${escapeHtml(pair[0])}</th>
+                <td>${String(pair[1] || '').replace(/\n/g,'<br>')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function finishList(){
+      const lines = val('finishRequirements').split('\n').map(x=>x.trim()).filter(Boolean);
+      return `<ul class="finish-list">${lines.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`;
+    }
+
+    function generateReport(){
+      const autoEquipment = buildAutoEquipment();
+      const manualEquipment = getManualEquipment();
+      const allEquipment = [...autoEquipment, ...manualEquipment];
+
+      document.getElementById('equipmentPreview').innerHTML = equipmentTable(allEquipment);
+
+      document.getElementById('reportContent').innerHTML = `
+        <div class="report-section-title">1. נתוני חיבור קיים</div>
+        ${infoTable([
+          ['שם המבקר', escapeHtml(val('visitorName'))],
+          ['תאריך', escapeHtml(val('visitDate'))],
+          ['שם התחנה', escapeHtml(val('siteName'))],
+          ['כתובת התחנה', escapeHtml(val('siteAddress'))],
+          ['גודל החיבור הקיים', escapeHtml(val('existingConnection'))],
+          ['מיקום מונה חח״י', escapeHtml(val('meterLocation'))],
+          ['מדידת זרם צריכה בזמן אמת', escapeHtml(val('currentMeasure'))],
+          ['נדרש ניתוק חשמל?', escapeHtml(val('powerShutdown'))],
+          ['פירוט ניתוק חשמל', escapeHtml(val('shutdownDetails'))]
+        ])}
+
+        <div class="report-section-title">2. תצורת חיבור והעבודה הנדרשת</div>
+        ${infoTable([
+          ['תצורת חיבור הזנה לעמדת הטעינה', escapeHtml(val('feedConfig'))],
+          ['תיאור העבודה הנדרשת', escapeHtml(val('workDescription'))],
+          ['הערה לקבלן', 'תוואי העבודה המפורט נמסר בסרטון שטח משלים שנשלח יחד עם דוח זה.']
+        ])}
+
+        <div class="report-section-title">3. פירוט עמדת הטעינה</div>
+        ${infoTable([
+          ['כמות עמדות טעינה DC', escapeHtml(val('dcQty'))],
+          ['הספק עמדה [kW]', escapeHtml(val('chargerKw'))],
+          ['כמות אקדחים / מחברים', escapeHtml(val('connectorQty'))],
+          ['אופן התקנת העמדה', escapeHtml(val('chargerInstallType'))],
+          ['גודל / מידות בסיס', escapeHtml(val('baseSize'))],
+          ['דגם עמדת הטעינה', escapeHtml(val('chargerModel'))],
+          ['ספק', escapeHtml(val('supplierName'))],
+          ['סוג מחבר / אקדחים בעמדה', escapeHtml(val('connectorType'))],
+          ['הערות להתקנת העמדה', escapeHtml(val('chargerNotes'))]
+        ])}
+
+        <div class="report-section-title">4. חיבור הזנה לעמדת הטעינה</div>
+        ${infoTable([
+          ['סוג כבל הזנה לעמדת הטעינה', escapeHtml(val('cableType'))],
+          ['שטח חתך כבל הזנה', escapeHtml(val('cableSection'))],
+          ['אורך כבל ממפסק ההזנה עד לעמדה [מטר]', escapeHtml(val('cableLength'))],
+          ['קוטר צינור קוברה נדרש', escapeHtml(val('cobraDiameter'))],
+          ['אורך צינור קוברה נדרש [מטר]', escapeHtml(val('cobraLength'))],
+          ['אופן חיבור הכבל לעמדה', escapeHtml(val('chargerConnectionMethod'))],
+          ['אופן העברת הכבל לעמדה', escapeHtml(val('cableRouteMethod'))]
+        ])}
+
+        <div class="report-section-title">5. חיבור הזנה בלוח המזין</div>
+        ${infoTable([
+          ['נדרש להשתיל מפסק מתאים בלוח המזין?', escapeHtml(val('breakerRequired'))],
+          ['סוג מפסק נדרש', escapeHtml(val('breakerType'))],
+          ['גודל מפסק נדרש', escapeHtml(val('breakerSize'))],
+          ['נדרש מהדק לפס דין?', escapeHtml(val('dinTerminalRequired'))],
+          ['פירוט מהדק לפס דין', escapeHtml(val('dinTerminalDetails'))],
+          ['נדרש גיד גמיש לחיווט המפסק?', escapeHtml(val('flexWireRequired'))],
+          ['פירוט גיד גמיש', escapeHtml(val('flexWireDetails'))],
+          ['גלנדים / אטמים / אביזרי כניסה לכבל', escapeHtml(val('cableAccessories'))]
+        ])}
+
+        <div class="report-section-title">6. מיתוג מתחם הטעינה</div>
+        ${infoTable([
+          ['צביעת חניה', escapeHtml(val('parkingPaint'))],
+          ['כמות חניות לצביעה', escapeHtml(val('parkingPaintQty'))],
+          ['התקנת הוראות הפעלה – כמות יחידות', escapeHtml(val('instructionSignQty'))],
+          ['סוג וגודל שלט הוראות הפעלה', escapeHtml(val('instructionSignType'))],
+          ['התקנת שילוט', escapeHtml(val('signInstallMethod'))],
+          ['שבלונות לסימון לוגו', escapeHtml(val('logoStencil'))]
+        ])}
+
+        <div class="report-section-title">7. אמצעי מיגון וחיבור למערכת הניהול</div>
+        ${infoTable([
+          ['אמצעי מיגון נדרש?', escapeHtml(val('protectionRequired'))],
+          ['חיבור עמדת הטעינה למערכת הניהול', escapeHtml(val('managementConnection'))]
+        ])}
+
+        <div class="report-section-title">8. רשימת ציוד נדרשת לביצוע</div>
+        ${equipmentTable(allEquipment)}
+
+        <div class="report-section-title">9. דרישות לעבודות גמר</div>
+        ${finishList()}
+      `;
+    }
+
+    function bindMainButtons(){
+      var btnUpdate = document.getElementById('btnUpdate');
+      var btnPrint = document.getElementById('btnPrint');
+      var btnAddTop = document.getElementById('btnAddTop');
+      var btnAddEquipment = document.getElementById('btnAddEquipment');
+
+      if(btnUpdate) btnUpdate.addEventListener('click', generateReport);
+      if(btnPrint) btnPrint.addEventListener('click', function(){
+        generateReport();
+        setTimeout(function(){ window.print(); }, 150);
+      });
+      if(btnAddTop) btnAddTop.addEventListener('click', function(){ addManualEquipmentRow('', '', ''); });
+      if(btnAddEquipment) btnAddEquipment.addEventListener('click', function(){ addManualEquipmentRow('', '', ''); });
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      bindMainButtons();
+      document.querySelectorAll('input,select,textarea').forEach(function(el){
+        el.addEventListener('input', generateReport);
+        el.addEventListener('change', generateReport);
+      });
+      addManualEquipmentRow('', '', '');
+      generateReport();
+    });
+  </script>
+</body>
+</html>
