@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edge Control – דוח סיור שטח פרויקט טעינה</title>
+<style>
+:root{--green:#43b02a;--black:#050505;--bg:#f5f7f5;--border:#dfe5df;--muted:#6b7280;--danger:#b91c1c;--soft:#ecfdf3}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,'Heebo',sans-serif;background:var(--bg);color:#111;direction:rtl} button,input,select,textarea{font-family:inherit} .hide{display:none!important}
+.header{background:linear-gradient(135deg,#000,#161616);color:white;padding:22px 16px;border-bottom:4px solid var(--green);position:sticky;top:0;z-index:10;box-shadow:0 4px 18px rgba(0,0,0,.18)}
+.header-inner{max-width:1180px;margin:auto;display:flex;gap:14px;align-items:center;justify-content:space-between}.brand{display:flex;gap:12px;align-items:center}.logo{width:74px;height:48px;object-fit:contain;background:#fff;border-radius:8px;padding:4px}.title h1{font-size:22px;margin:0;font-weight:800}.title p{font-size:13px;margin:4px 0 0;color:#cbd5e1}.top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer;font-size:14px}.btn.green{background:var(--green);color:#fff}.btn.dark{background:#111827;color:#fff}.btn.light{background:#fff;color:#111}.btn.gray{background:#e5e7eb;color:#111}.btn.red{background:#fee2e2;color:#991b1b}.btn.small{padding:7px 10px;font-size:12px;border-radius:8px}.container{max-width:1180px;margin:18px auto;padding:0 14px}.home{display:grid;grid-template-columns:1fr;gap:16px}.card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.05);padding:18px}.home-title{font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px}.home p{line-height:1.7;color:#374151}.section{background:#fff;border:1px solid var(--border);border-radius:16px;margin:14px 0;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}.section-head{background:#050505;color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.section-head h2{font-size:17px;margin:0}.section-body{padding:16px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid.two{grid-template-columns:repeat(2,1fr)}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800;color:#374151}.field input,.field select,.field textarea{border:1.5px solid #d1d5db;border-radius:10px;padding:10px;background:#fff;font-size:14px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green)} textarea{min-height:76px;resize:vertical}.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:6px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.tab{background:#fff;border:1.5px solid var(--border);border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:800}.tab.active{background:var(--green);color:#fff;border-color:var(--green)}.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:12px}table{width:100%;border-collapse:collapse;background:#fff;min-width:760px}th{background:#f0fdf4;color:#111;font-size:12px;text-align:right;padding:9px;border-bottom:1px solid var(--border)}td{padding:7px;border-bottom:1px solid #eef2f0;vertical-align:top}td input,td select,td textarea{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:7px;font-size:13px}td textarea{min-height:44px}.row-actions{display:flex;gap:6px}.add-line{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;gap:6px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:999px;padding:7px 10px;font-size:13px;margin:3px}.checkgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.check{border:1.5px solid #d1d5db;border-radius:10px;padding:9px;background:#fff;font-size:13px;font-weight:700;display:flex;gap:7px;align-items:center}.report-screen{display:none}.report-box{background:#fff;border-radius:16px;border:1px solid var(--border);padding:16px;margin-top:14px}.iframe{width:100%;height:72vh;border:1px solid var(--border);border-radius:12px;background:#fff}.footer-actions{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:10px;display:flex;gap:8px;justify-content:center;z-index:9}.photo-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.photo-preview img{width:90px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #ddd}.note{background:#fffbeb;border:1px solid #f59e0b;color:#92400e;border-radius:12px;padding:10px 12px;line-height:1.6;font-size:13px;margin:10px 0}.summary-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px;margin:10px 0;font-size:13px;line-height:1.7}
+@media(max-width:820px){.header-inner{align-items:flex-start;flex-direction:column}.grid,.grid.two{grid-template-columns:1fr}.checkgrid{grid-template-columns:1fr 1fr}.container{margin:12px auto}.title h1{font-size:19px}.section-body{padding:12px}table{min-width:900px}.top-actions{width:100%}.top-actions .btn{flex:1}.logo{display:none}}
+@media print{.header,.footer-actions,.top-actions,.btn,.tabs{display:none!important}.container{max-width:none;margin:0;padding:0}.section{box-shadow:none;border:0}.section-head{background:#111!important;color:white!important}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <img class="logo" src="edge-logo.jpg" onerror="this.style.display='none'" alt="Edge Control">
+      <div class="title"><h1>דוח סיור שטח – פרויקט טעינה</h1><p>טופס פרויקט AC / DC / לוחות חלוקה / תשתיות</p></div>
+    </div>
+    <div class="top-actions">
+      <button class="btn light" onclick="goMainMenu()">🏠 חזרה לתפריט ראשי</button>
+      <button class="btn gray" onclick="saveDraft()">💾 שמור טיוטה</button>
+      <button class="btn red" onclick="clearDraft()">🗑 נקה</button>
+      <button class="btn green" onclick="showReport()">📄 הפק דוח</button>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="formScreen">
+  <div class="home card">
+    <div class="home-title">טופס סיור לפרויקט טעינה</div>
+    <p>הטופס מיועד לפרויקטים החל מעמדת DC אחת ועד פרויקטים משולבים של מספר עמדות AC/DC, לוחות חלוקה, תוואי כבילה, קידוחים, תעלות, שילוט ורשימת ציוד אוטומטית.</p>
+    <div class="summary-box">המלצה למילוי: קודם פרטי פרויקט → בדיקת קיבולת → עמדות → לוחות → תוואים → תשתיות/שילוט → תמונות → הפקת דוח.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>1. פרטי פרויקט</h2></div>
+    <div class="section-body grid">
+      <div class="field"><label>שם הסוקר</label><input id="reviewer" data-save></div>
+      <div class="field"><label>תאריך הסיור</label><input type="date" id="reviewDate" data-save></div>
+      <div class="field"><label>שם הפרויקט</label><input id="projectName" data-save></div>
+      <div class="field"><label>שם הלקוח</label><input id="clientName" data-save></div>
+      <div class="field"><label>כתובת הפרויקט</label><input id="projectAddress" data-save></div>
+      <div class="field"><label>סוג אתר</label><select id="siteType" data-save><option></option><option>חניון ציבורי</option><option>חניון פרטי</option><option>בניין מגורים</option><option>בניין משרדים</option><option>מרכז מסחרי</option><option>תחנת דלק</option><option>מסוף אוטובוסים</option><option>אחר</option></select></div>
+      <div class="field"><label>איש קשר</label><input id="contactName" data-save></div>
+      <div class="field"><label>טלפון</label><input id="contactPhone" data-save></div>
+      <div class="field"><label>מייל</label><input id="contactEmail" data-save></div>
+      <div class="field full"><label>הערות כלליות</label><textarea id="generalNotes" data-save></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>2. בדיקת קיבולת חשמל באתר</h2></div>
+    <div class="section-body grid">
+      <div class="field"><label>מקור נתון החיבור</label><select id="capacitySource" data-save><option></option><option>בדיקה בשטח</option><option>חשבון חשמל</option><option>תכנית חשמל</option><option>מערכת BMS</option><option>אחר</option></select></div>
+      <div class="field"><label>גודל חיבור קיים</label><select id="existingConnection" data-save><option></option><option>3×63A</option><option>3×100A</option><option>3×160A</option><option>3×250A</option><option>3×400A</option><option>3×630A</option><option>אחר</option></select></div>
+      <div class="field"><label>גודל חיבור אחר</label><input id="existingConnectionOther" data-save placeholder="לדוגמה 3×800A"></div>
+      <div class="field"><label>גודל שנאי אם ידוע</label><select id="transformerSize" data-save><option></option><option>250kVA</option><option>400kVA</option><option>630kVA</option><option>1000kVA</option><option>אחר</option></select></div>
+      <div class="field"><label>גודל שנאי אחר</label><input id="transformerSizeOther" data-save placeholder="לדוגמה 800kVA"></div>
+      <div class="field"><label>צריכת שיא ידועה</label><input id="peakDemand" data-save placeholder="kW / A"></div>
+      <div class="field"><label>זרם פנוי שנמדד [A]</label><input type="number" id="freeCurrent" data-save></div>
+      <div class="field"><label>ניהול עומסים</label><select id="loadManagement" data-save><option></option><option>לא נדרש</option><option>ניהול עומסים מקומי</option><option>ניהול עומסים באמצעות מערכת הניהול</option><option>טרם נקבע</option></select></div>
+      <div class="field"><label>מונה ייעודי</label><select id="dedicatedMeter" data-save><option></option><option>נדרש</option><option>לא נדרש</option><option>טרם נקבע</option></select></div>
+      <div class="field"><label>מסקנת סוקר</label><select id="capacityConclusion" data-save><option></option><option>ניתן לחבר ללא הגדלת חיבור</option><option>ניתן לחבר אך מומלץ ניהול עומסים</option><option>נדרשת הגדלת חיבור</option><option>נדרשת בדיקה הנדסית נוספת</option></select></div>
+      <div class="field full"><label>הערות קיבולת חשמלית</label><textarea id="capacityNotes" data-save></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>3. עמדות טעינה וציוד מסופק</h2><button class="btn small green" onclick="addChargerRow()">+ הוסף סוג עמדה</button></div>
+    <div class="section-body">
+      <div class="table-wrap"><table id="chargersTable"><thead><tr><th>AC/DC</th><th>יצרן</th><th>דגם</th><th>הספק</th><th>שקע/כבל/מחברים</th><th>מנוהלת</th><th>מודם</th><th>מכשיר סליקה</th><th>ספק</th><th>כמות</th><th>שיטת התקנה</th><th>בסיס בטון</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="hint">אם Edge Control מספקת את העמדה — היא תתווסף לרשימת הציוד. אם הלקוח מספק — תופיע בסעיף ציוד באחריות הלקוח.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>4. לוחות חשמל קיימים</h2><button class="btn small green" onclick="addExistingPanelRow()">+ הוסף לוח קיים</button></div>
+    <div class="section-body">
+      <div class="table-wrap"><table id="existingPanelsTable"><thead><tr><th>שם לוח</th><th>מיקום</th><th>יצרן</th><th>מפסק ראשי</th><th>זרם פנוי</th><th>מפסק פנוי?</th><th>מספר מעגל</th><th>גודל מפסק פנוי</th><th>חיבור למפסק קיים</th><th>מקום למפסק?</th><th>אם מפסק חדש – חיבור מהפסים</th><th>יציאה ממפסק חדש</th><th>מהדקים לפס דין?</th><th>כמות מהדקים</th><th>חתך כבל יוצא</th><th>מקום לפחת?</th><th>מקום למונה?</th><th>פסי צבירה נגישים?</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>5. לוחות חלוקה חדשים</h2><button class="btn small green" onclick="addNewPanelRow()">+ הוסף לוח חלוקה</button></div>
+    <div class="section-body">
+      <div class="table-wrap"><table id="newPanelsTable"><thead><tr><th>שם לוח</th><th>מיקום</th><th>פנימי/חיצוני</th><th>תלוי/רצפתי</th><th>כניסת כבילה</th><th>מוזן מלוח</th><th>מספר מעגל</th><th>הזנה ממפסק</th><th>גודל מפסק הזנה</th><th>חיבור מפסק הזנה</th><th>אם מפסק חדש – חיבור מהפסים</th><th>יציאה מהמפסק ללוח</th><th>מהדקים לפס דין?</th><th>כמות מהדקים</th><th>חתך כבל יוצא</th><th>כבל הזנה</th><th>אורך</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+      <h3>ציוד בלוח החדש</h3>
+      <div class="table-wrap"><table id="panelEquipTable"><thead><tr><th>מספר מעגל</th><th>סוג ציוד</th><th>פחת בטור</th><th>גודל / זרם</th><th>כמות</th><th>יזין כבל</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="add-line"><button class="btn small green" onclick="addPanelEquipRow()">+ הוסף ציוד בלוח</button></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>6. מקטעי תוואי וכבלי הזנה</h2><button class="btn small green" onclick="addRouteRow()">+ הוסף מקטע תוואי</button></div>
+    <div class="section-body">
+      <div class="table-wrap"><table id="routesTable"><thead><tr><th>מקור</th><th>יעד</th><th>סוג כבל הזנה</th><th>שטח חתך</th><th>אורך כבל</th><th>גיד הארקה</th><th>סוג גיד נפרד</th><th>חתך גיד נפרד</th><th>אורך גיד</th><th>אופן התקנה</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="hint">כבלי תקשורת אינם חלק ממקטעי כבל הזנה — הם נמצאים בסעיף תקשורת.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>7. תעלות</h2><button class="btn small green" onclick="addTrayRow()">+ הוסף תעלה</button></div>
+    <div class="section-body">
+      <div class="table-wrap"><table id="traysTable"><thead><tr><th>סוג תעלה</th><th>גודל</th><th>אורך</th><th>מכסה</th><th>אופן התקנה</th><th>צבע מיוחד</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>8. הארקת גופים מתכתיים</h2><button class="btn small green" onclick="addGroundingRow()">+ הוסף הארקה</button></div>
+    <div class="section-body">
+      <div class="table-wrap"><table id="groundingTable"><thead><tr><th>גוף להארקה</th><th>מקור הארקה</th><th>מוליך</th><th>חתך</th><th>אורך</th><th>אופן חיבור</th><th>כמות נקודות</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>9. קידוחים ועבודות אזרחיות</h2></div>
+    <div class="section-body">
+      <h3>קידוחים</h3>
+      <div class="table-wrap"><table id="drillsTable"><thead><tr><th>קוטר</th><th>כמות</th><th>סוג קידוח</th><th>מיקום</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="add-line"><button class="btn small green" onclick="addDrillRow()">+ הוסף קידוח</button></div>
+      <h3>עבודות אזרחיות</h3>
+      <div class="table-wrap"><table id="civilTable"><thead><tr><th>סוג עבודה</th><th>אורך/כמות</th><th>יחידה</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="add-line"><button class="btn small green" onclick="addCivilRow()">+ הוסף עבודה</button></div>
+      <h3>בסיסי בטון</h3>
+      <div class="table-wrap"><table id="basesTable"><thead><tr><th>סוג בסיס</th><th>קיים/חדש</th><th>כמות</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="add-line"><button class="btn small green" onclick="addBaseRow()">+ הוסף בסיס בטון</button></div>
+      <div class="note">בדוח הסופי תתווסף הערה: הכנת בסיסי בטון בהתאם לתכניות היצרן / תכניות ההתקנה המאושרות של הפרויקט.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>10. שילוט</h2></div>
+    <div class="section-body">
+      <div class="grid two">
+        <div class="field"><label>האם נדרש שילוט למתחם?</label><select id="signageRequired" data-save onchange="toggleSignagePole()"><option></option><option>כן</option><option>לא</option></select></div>
+        <div class="field"><label>נדרש עמוד 3 צול ייעודי לשילוט?</label><select id="signagePole" data-save><option></option><option>כן</option><option>לא</option></select></div>
+      </div>
+      <div class="table-wrap" style="margin-top:12px"><table id="signageTable"><thead><tr><th>סוג שלט</th><th>כמות</th><th>הערות</th></tr></thead><tbody>
+        <tr><td>הוראות הפעלה קטן</td><td><input type="number" data-sign="הוראות הפעלה קטן" min="0"></td><td><input></td></tr>
+        <tr><td>הוראות הפעלה גדול</td><td><input type="number" data-sign="הוראות הפעלה גדול" min="0"></td><td><input></td></tr>
+        <tr><td>תמרור 433</td><td><input type="number" data-sign="תמרור 433" min="0"></td><td><input></td></tr>
+        <tr><td>תמרור צהוב &quot;פרט לרכב חשמלי בטעינה&quot;</td><td><input type="number" data-sign="תמרור צהוב פרט לרכב חשמלי בטעינה" min="0"></td><td><input></td></tr>
+      </tbody></table></div>
+      <div class="grid two" style="margin-top:12px"><div class="field"><label>כמות עמודי 3 צול לשילוט</label><input type="number" id="signagePoleQty" data-save min="0"></div><div class="field"><label>הערות שילוט</label><input id="signageNotes" data-save></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>11. צביעת חניות</h2></div>
+    <div class="section-body grid">
+      <div class="field"><label>נדרשת צביעת חניות?</label><select id="parkingPaintRequired" data-save><option></option><option>כן</option><option>לא</option></select></div>
+      <div class="field"><label>כמות חניות לצביעה</label><input type="number" id="parkingPaintQty" data-save min="0"></div>
+      <div class="field"><label>סימון החניה</label><select id="parkingPaintType" data-save><option></option><option>צביעת חניה מלאה</option><option>סימון מסגרת ירוקה</option><option>סימון רצפה לרכב חשמלי</option><option>אחר</option></select></div>
+      <div class="field full"><label>הערות צביעת חניות</label><textarea id="parkingPaintNotes" data-save></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>12. תקשורת וניהול</h2></div>
+    <div class="section-body grid">
+      <div class="field"><label>מערכת ניהול</label><select id="managementSystem" data-save><option></option><option>EdgeControl</option><option>Wevo</option><option>אחר</option><option>לא נדרש</option></select></div>
+      <div class="field"><label>ארון תקשורת</label><select id="commCabinet" data-save><option></option><option>קיים</option><option>חדש</option><option>לא נדרש</option></select></div>
+      <div class="field"><label>מיקום ארון תקשורת</label><input id="commCabinetLocation" data-save></div>
+      <div class="field"><label>סוויץ'</label><select id="switchSize" data-save><option></option><option>6 פורטים</option><option>8 פורטים</option><option>12 פורטים</option><option>16 פורטים</option><option>אחר</option><option>לא נדרש</option></select></div>
+      <div class="field"><label>מודמים סלולריים – כמות</label><input type="number" id="modemQty" data-save min="0"></div>
+      <div class="field"><label>סימים – כמות</label><input type="number" id="simQty" data-save min="0"></div>
+      <div class="field full"><label>הערות תקשורת</label><textarea id="commNotes" data-save></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>13. תשתיות קיימות ותמונות</h2></div>
+    <div class="section-body">
+      <div class="grid">
+        <div class="field"><label>קיימות תעלות/צנרות?</label><select id="existingInfra" data-save><option></option><option>כן</option><option>חלקית</option><option>לא</option></select></div>
+        <div class="field"><label>ניתן להשתמש בתשתית קיימת?</label><select id="reuseInfra" data-save><option></option><option>כן</option><option>חלקית</option><option>לא</option><option>טרם נקבע</option></select></div>
+        <div class="field"><label>מקום פנוי בתשתית קיימת</label><input id="infraSpace" data-save></div>
+        <div class="field full"><label>הערות תשתית קיימת</label><textarea id="infraNotes" data-save></textarea></div>
+      </div>
+      <h3>תמונות חובה/מומלצות</h3>
+      <div class="checkgrid" id="photoChecksWrap">
+        <label class="check"><input type="checkbox" data-photo="לוח ראשי" onchange="renderPhotoUploaders();autoSaveSoon()"> לוח ראשי</label>
+        <label class="check"><input type="checkbox" data-photo="לוח חלוקה" onchange="renderPhotoUploaders();autoSaveSoon()"> לוח חלוקה</label>
+        <label class="check"><input type="checkbox" data-photo="פסי צבירה" onchange="renderPhotoUploaders();autoSaveSoon()"> פסי צבירה</label>
+        <label class="check"><input type="checkbox" data-photo="חדר חשמל" onchange="renderPhotoUploaders();autoSaveSoon()"> חדר חשמל</label>
+        <label class="check"><input type="checkbox" data-photo="מיקום AC" onchange="renderPhotoUploaders();autoSaveSoon()"> מיקום AC</label>
+        <label class="check"><input type="checkbox" data-photo="מיקום DC" onchange="renderPhotoUploaders();autoSaveSoon()"> מיקום DC</label>
+        <label class="check"><input type="checkbox" data-photo="תוואי כבילה" onchange="renderPhotoUploaders();autoSaveSoon()"> תוואי כבילה</label>
+        <label class="check"><input type="checkbox" data-photo="קידוחים" onchange="renderPhotoUploaders();autoSaveSoon()"> קידוחים</label>
+        <label class="check"><input type="checkbox" data-photo="תעלות" onchange="renderPhotoUploaders();autoSaveSoon()"> תעלות</label>
+        <label class="check"><input type="checkbox" data-photo="ארון תקשורת" onchange="renderPhotoUploaders();autoSaveSoon()"> ארון תקשורת</label>
+      </div>
+      <div id="photoCategoryUploads" style="margin-top:12px"></div><div style="font-size:12px;color:#6b7280;margin-top:6px">לאחר סימון קטגוריה תופיע כאן אפשרות להעלאת תמונות עבור אותה קטגוריה.</div>
+      <div id="photoPreview" class="photo-preview"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>14. ציוד נוסף ידני</h2><button class="btn small green" onclick="addManualItemRow()">+ הוסף ציוד</button></div>
+    <div class="section-body">
+      <div class="table-wrap"><table id="manualItemsTable"><thead><tr><th>שם פריט</th><th>יחידת מידה</th><th>כמות</th><th>הערות</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="footer-actions"><button class="btn green" onclick="showReport()">📄 הפק דוח מסודר</button><button class="btn gray" onclick="saveDraft()">💾 שמור טיוטה</button></div>
+</div>
+
+<div class="container report-screen" id="reportScreen">
+  <div class="report-box">
+    <div class="top-actions" style="margin-bottom:12px">
+      <button class="btn gray" onclick="backToForm()">← חזרה לעריכה</button>
+      <button class="btn green" onclick="printReport()">🖨️ שמור PDF / הדפס</button>
+      <button class="btn dark" onclick="downloadHTML()">⬇️ הורד HTML</button>
+    </div>
+    <iframe id="reportFrame" class="iframe"></iframe>
+  </div>
+</div>
+
+<script>
+const SAVE_KEY='ec_project_survey_v3';
+let photos=[];
+const $=s=>document.querySelector(s); const $$=s=>Array.from(document.querySelectorAll(s));
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function val(id){return document.getElementById(id)?.value?.trim()||''}
+function qty(v){let n=parseFloat(v);return isNaN(n)?0:n}
+function opt(arr){return '<option></option>'+arr.map(x=>`<option>${x}</option>`).join('')}
+function goMainMenu(){ location.href='index.html'; }
+function delRow(btn){btn.closest('tr').remove(); autoSaveSoon();}
+function selectHtml(arr, cls=''){return `<select class="${cls}">${opt(arr)}</select>`}
+function inputHtml(cls='', type='text', ph=''){return `<input class="${cls}" type="${type}" placeholder="${ph}">`}
+function rowBtn(){return `<button class="btn small red" onclick="delRow(this)">מחק</button>`}
+
+function addChargerRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`
+<td>${selectHtml(['AC','DC'],'ch-type')}</td><td>${inputHtml('ch-maker')}</td><td>${inputHtml('ch-model')}</td><td>${inputHtml('ch-power','text','22kW / 180kW')}</td><td>${inputHtml('ch-connector','text','שקע / כבל / CCS')}</td><td>${selectHtml(['מנוהלת','לא מנוהלת'],'ch-managed')}</td><td>${selectHtml(['עם מודם','ללא מודם'],'ch-modem')}</td><td>${selectHtml(['ללא סליקה','מכשיר סליקה מובנה','מכשיר סליקה חיצוני'],'ch-payment')}</td><td>${selectHtml(['Edge Control','הלקוח'],'ch-supplier')}</td><td>${inputHtml('ch-qty','number')}</td><td>${selectHtml(['התקנה על גבי קיר','התקנה על גבי סטנד יעודי קיים','התקנה על גבי סטנד חדש','התקנה על גבי בסיס בטון'],'ch-install')}</td><td>${selectHtml(['לא נדרש','קיים','נדרש חדש'],'ch-base')}</td><td>${rowBtn()}</td>`; $('#chargersTable tbody').appendChild(tr); fillRow(tr,data); }
+function addExistingPanelRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${inputHtml('ep-name','text','Q0')}</td><td>${inputHtml('ep-location')}</td><td>${inputHtml('ep-maker')}</td><td>${inputHtml('ep-main','text','3×400A')}</td><td>${inputHtml('ep-free','text','A')}</td><td>${selectHtml(['כן','לא'],'ep-spare')}</td><td>${inputHtml('ep-circuit','text','לדוגמה 12')}</td><td>${inputHtml('ep-spare-size')}</td><td>${selectHtml(['','נעלי כבל','חיבור מהיר'],'ep-existing-conn')}</td><td>${selectHtml(['כן','לא'],'ep-new-space')}</td><td>${selectHtml(['','נעלי כבל','חיבור מהיר','אומגה'],'ep-new-feed-conn')}</td><td>${selectHtml(['','נעלי כבל','חיבור מהיר'],'ep-new-out-conn')}</td><td>${selectHtml(['לא','כן'],'ep-din-needed')}</td><td>${inputHtml('ep-din-qty','number')}</td><td>${inputHtml('ep-out-section','text','לדוגמה 5x16')}</td><td>${selectHtml(['כן','לא'],'ep-rcd-space')}</td><td>${selectHtml(['כן','לא'],'ep-meter-space')}</td><td>${selectHtml(['כן','לא'],'ep-busbar')}</td><td><textarea class="ep-notes"></textarea></td><td>${rowBtn()}</td>`; $('#existingPanelsTable tbody').appendChild(tr); fillRow(tr,data);}
+function addNewPanelRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${inputHtml('np-name','text','QEV-01')}</td><td>${inputHtml('np-location')}</td><td>${selectHtml(['פנימי','חיצוני'],'np-inout')}</td><td>${selectHtml(['תלוי','רצפתי'],'np-mount')}</td><td>${selectHtml(['מלמעלה','מלמטה'],'np-entry')}</td><td>${inputHtml('np-fedfrom','text','Q0')}</td><td>${inputHtml('np-circuit','text','לדוגמה 1')}</td><td>${selectHtml(['מפסק קיים','מפסק חדש'],'np-feedtype')}</td><td>${inputHtml('np-feedbreaker','text','250A')}</td><td>${selectHtml(['','נעלי כבל','חיבור מהיר'],'np-breaker-conn')}</td><td>${selectHtml(['','נעלי כבל','חיבור מהיר','אומגה'],'np-busbar-conn')}</td><td>${selectHtml(['','נעלי כבל','חיבור מהיר'],'np-out-conn')}</td><td>${selectHtml(['לא','כן'],'np-din-needed')}</td><td>${inputHtml('np-din-qty','number')}</td><td>${inputHtml('np-out-section','text','לדוגמה 4x240')}</td><td>${inputHtml('np-cable','text','NA2XY 4x240')}</td><td>${inputHtml('np-length','number')}</td><td><textarea class="np-notes"></textarea></td><td>${rowBtn()}</td>`; $('#newPanelsTable tbody').appendChild(tr); fillRow(tr,data);}
+function circuitOptions(){return Array.from({length:30},(_,i)=>String(i+1));}
+function addPanelEquipRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${selectHtml(circuitOptions(),'pe-circuit')}</td><td>${selectHtml(['מא״ז','מא״ז משולב פחת','ברייקר 3 פול','ברייקר 4 פול','ברייקר 4 פול משולב פחת','מונה','אחר'],'pe-type')}</td><td>${selectHtml(['לא רלוונטי','כן','לא'],'pe-rcd-series')}</td><td>${inputHtml('pe-size','text','לדוגמה 3×32A')}</td><td>${inputHtml('pe-qty','number')}</td><td>${inputHtml('pe-cable','text','לדוגמה 5x4')}</td><td>${inputHtml('pe-notes')}</td><td>${rowBtn()}</td>`; $('#panelEquipTable tbody').appendChild(tr); fillRow(tr,data); bindPanelEquipLogic(tr);}
+function addRouteRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${inputHtml('rt-source','text','QEV')}</td><td>${inputHtml('rt-dest','text','עמדות AC')}</td><td>${selectHtml(['N2XY נחושת','NA2XY אלומיניום','חד גידי PVC','אחר'],'rt-cable-type')}</td><td>${inputHtml('rt-section','text','5×10')}</td><td>${inputHtml('rt-cable-length','number')}</td><td>${selectHtml(['אינטגרלי בכבל','גיד הארקה נפרד'],'rt-ground-type')}</td><td>${selectHtml(['','PVC צהוב/ירוק','נחושת חשופה'],'rt-ground-kind')}</td><td>${inputHtml('rt-ground-section','text','לדוגמה 16 / 35 / 70')}</td><td>${inputHtml('rt-ground-length','number')}</td><td><textarea class="rt-method" placeholder="PG / מררון / תעלה / אדמה / פיר"></textarea></td><td><textarea class="rt-notes"></textarea></td><td>${rowBtn()}</td>`; $('#routesTable tbody').appendChild(tr); fillRow(tr,data); bindRouteLogic(tr);}
+function addTrayRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${selectHtml(['תעלת רשת','תעלת פח סגורה','תעלת פח מחורצת'],'tr-type')}</td><td>${selectHtml(['60 מ״מ','100 מ״מ','200 מ״מ','300 מ״מ','400 מ״מ'],'tr-size')}</td><td>${inputHtml('tr-length','number')}</td><td>${selectHtml(['ללא מכסה','עם מכסה','מכסה מחושב אוטומטית'],'tr-cover')}</td><td>${selectHtml(['על קיר','על תקרה','על קונסטרוקציה','על עמוד תמח״ש','על זוויתן','אחר'],'tr-install')}</td><td>${inputHtml('tr-color','text','לדוגמה לבן')}</td><td><textarea class="tr-notes"></textarea></td><td>${rowBtn()}</td>`; $('#traysTable tbody').appendChild(tr); fillRow(tr,data);}
+function addGroundingRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${selectHtml(['תעלת רשת','תעלת פח','עמוד 3 צול','עמוד 6 צול','לוח חלוקה','קונסטרוקציה','אחר'],'gr-body')}</td><td>${selectHtml(['פס השוואת פוטנציאלים','לוח חלוקה','לוח ראשי'],'gr-source')}</td><td>${selectHtml(['נחושת חשופה','PVC צהוב/ירוק'],'gr-kind')}</td><td>${selectHtml(['16 ממ״ר','35 ממ״ר','אחר'],'gr-section')}</td><td>${inputHtml('gr-length','number')}</td><td>${selectHtml(['נעל כבל','מחבר לתעלת רשת','אחר'],'gr-connection')}</td><td>${inputHtml('gr-points','number')}</td><td><textarea class="gr-notes"></textarea></td><td>${rowBtn()}</td>`; $('#groundingTable tbody').appendChild(tr); fillRow(tr,data);}
+function addDrillRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${inputHtml('dr-diameter','text','4 צול')}</td><td>${inputHtml('dr-qty','number')}</td><td>${selectHtml(['בטון','בלוקים','גבס','תקרה','אחר'],'dr-type')}</td><td>${inputHtml('dr-location')}</td><td>${inputHtml('dr-notes')}</td><td>${rowBtn()}</td>`; $('#drillsTable tbody').appendChild(tr); fillRow(tr,data);}
+function addCivilRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${selectHtml(['חפירה','חציבת בטון','חציבת אספלט','משתלבות','אחר'],'cv-type')}</td><td>${inputHtml('cv-qty','number')}</td><td>${selectHtml(['מטר','יחידה','מ״ר','אחר'],'cv-unit')}</td><td>${inputHtml('cv-notes')}</td><td>${rowBtn()}</td>`; $('#civilTable tbody').appendChild(tr); fillRow(tr,data);}
+function addBaseRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${selectHtml(['בסיס בטון לעמוד עמדת טעינה AC','בסיס בטון לעמוד 3 צול','בסיס בטון לעמוד 6 צול','בסיס בטון לעמדת טעינה DC','בסיס בטון ללוח חלוקה','בסיס בטון לעמוד שילוט'],'bs-type')}</td><td>${selectHtml(['קיים','נדרש חדש'],'bs-status')}</td><td>${inputHtml('bs-qty','number')}</td><td>${inputHtml('bs-notes')}</td><td>${rowBtn()}</td>`; $('#basesTable tbody').appendChild(tr); fillRow(tr,data);}
+function addManualItemRow(data={}){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${inputHtml('mi-name')}</td><td>${inputHtml('mi-unit','text','יח׳ / מטר / סט')}</td><td>${inputHtml('mi-qty')}</td><td>${inputHtml('mi-notes')}</td><td>${rowBtn()}</td>`; $('#manualItemsTable tbody').appendChild(tr); fillRow(tr,data);}
+function fillRow(tr,data){ Object.entries(data||{}).forEach(([cls,val])=>{const el=tr.querySelector('.'+cls); if(el) el.value=val;}); bindAutosave(); }
+function bindRouteLogic(tr){ const len=tr.querySelector('.rt-cable-length'), gt=tr.querySelector('.rt-ground-type'), gk=tr.querySelector('.rt-ground-kind'), gs=tr.querySelector('.rt-ground-section'), gl=tr.querySelector('.rt-ground-length'); function upd(){const sep=gt.value==='גיד הארקה נפרד'; [gk,gs,gl].forEach(el=>{if(!el)return; el.disabled=!sep; if(!sep) el.value='';}); if(sep && len && gl) gl.value=len.value||'';} if(len) len.oninput=()=>{upd();autoSaveSoon()}; if(gt) gt.onchange=()=>{upd();autoSaveSoon()}; upd(); }
+function bindPanelEquipLogic(tr){ const type=tr.querySelector('.pe-type'), rcd=tr.querySelector('.pe-rcd-series'); function upd(){ if(!type||!rcd)return; const enabled=type.value==='מא״ז'; rcd.disabled=!enabled; if(!enabled) rcd.value='לא רלוונטי'; } if(type) type.onchange=()=>{upd();autoSaveSoon()}; upd(); }
+
+function rows(tableId, classes){return $$(`#${tableId} tbody tr`).map(tr=>{let o={};classes.forEach(c=>o[c]=tr.querySelector('.'+c)?.value?.trim()||'');return o;}).filter(o=>Object.values(o).some(v=>v));}
+function getData(){ return {fields:Object.fromEntries($$('[data-save]').map(el=>[el.id,el.value])),
+chargers:rows('chargersTable',['ch-type','ch-maker','ch-model','ch-power','ch-connector','ch-managed','ch-modem','ch-payment','ch-supplier','ch-qty','ch-install','ch-base']),
+existingPanels:rows('existingPanelsTable',['ep-name','ep-location','ep-maker','ep-main','ep-free','ep-spare','ep-circuit','ep-spare-size','ep-existing-conn','ep-new-space','ep-new-feed-conn','ep-new-out-conn','ep-din-needed','ep-din-qty','ep-out-section','ep-rcd-space','ep-meter-space','ep-busbar','ep-notes']),
+newPanels:rows('newPanelsTable',['np-name','np-location','np-inout','np-mount','np-entry','np-fedfrom','np-circuit','np-feedtype','np-feedbreaker','np-breaker-conn','np-busbar-conn','np-out-conn','np-din-needed','np-din-qty','np-out-section','np-cable','np-length','np-notes']),
+panelEquip:rows('panelEquipTable',['pe-circuit','pe-type','pe-rcd-series','pe-size','pe-qty','pe-cable','pe-notes']),routes:rows('routesTable',['rt-source','rt-dest','rt-cable-type','rt-section','rt-cable-length','rt-ground-type','rt-ground-kind','rt-ground-section','rt-ground-length','rt-method','rt-notes']),
+trays:rows('traysTable',['tr-type','tr-size','tr-length','tr-cover','tr-install','tr-color','tr-notes']),grounding:rows('groundingTable',['gr-body','gr-source','gr-kind','gr-section','gr-length','gr-connection','gr-points','gr-notes']),
+drills:rows('drillsTable',['dr-diameter','dr-qty','dr-type','dr-location','dr-notes']),civil:rows('civilTable',['cv-type','cv-qty','cv-unit','cv-notes']),bases:rows('basesTable',['bs-type','bs-status','bs-qty','bs-notes']),manual:rows('manualItemsTable',['mi-name','mi-unit','mi-qty','mi-notes']),
+signage:getSignage(),photoChecks:$$('[data-photo]:checked').map(x=>x.dataset.photo),photos};}
+function getSignage(){return $$('#signageTable tbody tr').map(tr=>({name:tr.cells[0].textContent.trim(),qty:tr.cells[1].querySelector('input').value,notes:tr.cells[2].querySelector('input').value})).filter(x=>qty(x.qty)>0)}
+function saveDraft(){ try{ localStorage.setItem(SAVE_KEY,JSON.stringify(getData())); quotaWarned=false; alert('✅ הטיוטה נשמרה'); }catch(e){ alert('⚠️ לא ניתן לשמור את הטיוטה — כנראה נגמר מקום האחסון בדפדפן (בדרך כלל בגלל תמונות). הפק/הורד את הדוח כדי לשמור את הנתונים.'); } }
+let saveTimer=null; let quotaWarned=false; function autoSaveSoon(){clearTimeout(saveTimer); saveTimer=setTimeout(()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(getData())); quotaWarned=false;}catch(e){ if(!quotaWarned){ quotaWarned=true; alert('⚠️ שמירת הטיוטה האוטומטית נכשלה — כנראה נגמר מקום האחסון בדפדפן (בדרך כלל בגלל תמונות). הדוח ייווצר כרגיל, אך מומלץ להפיק/להוריד אותו עכשיו כדי לא לאבד נתונים.'); } }},500)}
+function bindAutosave(){
+  $$('input,select,textarea').forEach(el=>{
+    if(el.dataset.acBound) return; el.dataset.acBound='1';
+    el.addEventListener('input', autoSaveSoon);
+    el.addEventListener('change', () => {
+      if(el.matches('[data-photo]')) renderPhotoUploaders();
+      autoSaveSoon();
+    });
+  });
+}
+function clearDraft(){if(confirm('למחוק את כל הטופס והטיוטה?')){localStorage.removeItem(SAVE_KEY);location.reload();}}
+function loadDraft(){const raw=localStorage.getItem(SAVE_KEY); if(!raw) return false; const d=JSON.parse(raw); Object.entries(d.fields||{}).forEach(([id,v])=>{const el=document.getElementById(id); if(el) el.value=v;}); (d.chargers||[]).forEach(addChargerRow);(d.existingPanels||[]).forEach(addExistingPanelRow);(d.newPanels||[]).forEach(addNewPanelRow);(d.panelEquip||[]).forEach(addPanelEquipRow);(d.routes||[]).forEach(addRouteRow);(d.trays||[]).forEach(addTrayRow);(d.grounding||[]).forEach(addGroundingRow);(d.drills||[]).forEach(addDrillRow);(d.civil||[]).forEach(addCivilRow);(d.bases||[]).forEach(addBaseRow);(d.manual||[]).forEach(addManualItemRow); photos=(d.photos||[]).map(p=>typeof p==='string'?{category:'כללי',src:p}:p); (d.photoChecks||[]).forEach(cat=>{const cb=[...document.querySelectorAll('[data-photo]')].find(x=>x.dataset.photo===cat); if(cb) cb.checked=true;}); (d.signage||[]).forEach(s=>{const tr=$$('#signageTable tbody tr').find(r=>r.cells[0].textContent.trim()===s.name); if(tr){const q=tr.cells[1].querySelector('input'),n=tr.cells[2].querySelector('input'); if(q) q.value=s.qty||''; if(n) n.value=s.notes||'';}}); renderPhotoUploaders(); renderPhotos(); bindAutosave(); return true;}
+async function resizeImg(file){return new Promise(res=>{const r=new FileReader(); r.onload=e=>{const img=new Image(); img.onload=()=>{let w=img.width,h=img.height,sc=Math.min(1,1100/Math.max(w,h)); w*=sc;h*=sc;const c=document.createElement('canvas'); c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',.72));}; img.src=e.target.result}; r.readAsDataURL(file);});}
+async function handlePhotos(inp, category='כללי'){for(const f of Array.from(inp.files||[])){photos.push({category,src:await resizeImg(f)});} inp.value=''; renderPhotos(); autoSaveSoon();}
+function renderPhotoUploaders(){const wrap=$('#photoCategoryUploads'); if(!wrap) return; const cats=$$('[data-photo]:checked').map(x=>x.dataset.photo); wrap.innerHTML=cats.map(cat=>`<div class="field full" style="margin:10px 0;padding:10px;border:1px dashed #43b02a;border-radius:12px;background:#f8fff8"><label>העלאת תמונות – ${esc(cat)}</label><input type="file" accept="image/*" multiple onchange="handlePhotos(this,'${esc(cat)}')"></div>`).join('');}
+function renderPhotos(){const p=$('#photoPreview'); if(!p)return; p.innerHTML=photos.map((ph,i)=>{const src=typeof ph==='string'?ph:ph.src, cat=typeof ph==='string'?'כללי':ph.category; return `<div><div style="font-size:11px;font-weight:800;color:#43b02a;margin-bottom:3px">${esc(cat)}</div><img src="${src}"><br><button class="btn small red" onclick="photos.splice(${i},1);renderPhotos();autoSaveSoon()">מחק</button></div>`}).join('')}
+function toggleSignagePole(){ if(val('signageRequired')==='לא'){ $('#signagePole').value='לא'; $('#signagePoleQty').value=''; }}
+function unitForName(name){
+  if(!name) return 'יח׳';
+  if(name.includes('כבל')||name.includes('גיד הארקה')||name.includes('תעלה')||name.includes('מכסה')) return 'מטר';
+  if(name.includes('נעלי כבל')||name.includes('מחבר')||name.includes('מהדק')) return 'יח׳';
+  if(name.includes('בסיס בטון')) return 'יח׳';
+  return 'יח׳';
+}
+function addItem(map,name,qtyVal,notes='',unit=''){
+  if(!name) return;
+  let q=qty(qtyVal); if(!q) return;
+  unit=unit||unitForName(name);
+  const key=name+'|'+unit+'|'+notes;
+  if(!map[key]) map[key]={name,unit,qty:0,notes};
+  map[key].qty+=q;
+}
+function addConnectionAccessory(map, method, section, notes){
+  if(!method) return;
+  if(method==='נעלי כבל') addItem(map,`נעלי כבל ${section||''}`.trim(),1,notes,'סט');
+  else if(method==='חיבור מהיר') addItem(map,`מחבר מהיר ${section||''}`.trim(),1,notes,'סט');
+  else if(method==='אומגה') addItem(map,`מחבר אומגה ${section||''}`.trim(),1,notes,'סט');
+}
+function equipmentList(d){
+  const map={};
+  d.chargers.forEach(c=>{
+    if(c['ch-supplier']==='Edge Control') addItem(map,`עמדת טעינה ${c['ch-type']} ${c['ch-maker']} ${c['ch-model']} ${c['ch-power']} ${c['ch-connector']}`,c['ch-qty'],`${c['ch-managed']} | ${c['ch-modem']} | ${c['ch-payment']}`,'יח׳');
+    if(c['ch-install']&&c['ch-install']!=='התקנה על גבי קיר') addItem(map,c['ch-install'],c['ch-qty'],'עבור התקנת עמדה','יח׳');
+    if(c['ch-base']==='נדרש חדש') addItem(map, c['ch-type']==='DC'?'בסיס בטון לעמדת טעינה DC':'בסיס בטון לעמוד עמדת טעינה AC', c['ch-qty'],'לפי תכנית יצרן','יח׳');
+  });
+  d.existingPanels.forEach(p=>{
+    addConnectionAccessory(map,p['ep-existing-conn'],p['ep-out-section'],`לוח ${p['ep-name']} | מפסק קיים מעגל ${p['ep-circuit']||'—'}`);
+    addConnectionAccessory(map,p['ep-new-feed-conn'],p['ep-out-section'],`לוח ${p['ep-name']} | הזנת מפסק חדש מהפסים`);
+    addConnectionAccessory(map,p['ep-new-out-conn'],p['ep-out-section'],`לוח ${p['ep-name']} | יציאה ממפסק חדש`);
+    if(p['ep-din-needed']==='כן') addItem(map,`מהדקים לפס דין ${p['ep-out-section']||''}`.trim(),p['ep-din-qty'],`לוח ${p['ep-name']}`,'יח׳');
+  });
+  d.newPanels.forEach(p=>{
+    addItem(map,`לוח חלוקה ${p['np-name']} ${p['np-inout']} ${p['np-mount']}`,1,`${p['np-location']} | ${p['np-notes']||''}`,'יח׳');
+    addConnectionAccessory(map,p['np-breaker-conn'],p['np-out-section'],`לוח ${p['np-name']} | חיבור מפסק הזנה`);
+    if(p['np-feedtype']==='מפסק חדש') addConnectionAccessory(map,p['np-busbar-conn'],p['np-out-section'],`לוח ${p['np-name']} | חיבור מהפסים למפסק חדש`);
+    addConnectionAccessory(map,p['np-out-conn'],p['np-out-section'],`לוח ${p['np-name']} | יציאה מהמפסק ללוח`);
+    if(p['np-din-needed']==='כן') addItem(map,`מהדקים לפס דין ${p['np-out-section']||''}`.trim(),p['np-din-qty'],`לוח ${p['np-name']}`,'יח׳');
+  });
+  d.panelEquip.forEach(p=>addItem(map,`${p['pe-type']} ${p['pe-size']}`,p['pe-qty'],`מעגל ${p['pe-circuit']} | יזין כבל ${p['pe-cable']||'—'} | פחת בטור: ${p['pe-rcd-series']||'—'} ${p['pe-notes']||''}`,'יח׳'));
+  d.routes.forEach(r=>{addItem(map,`כבל הזנה ${r['rt-cable-type']} ${r['rt-section']}`,r['rt-cable-length'],'','מטר'); if(r['rt-ground-type']==='גיד הארקה נפרד') addItem(map,`גיד הארקה ${r['rt-ground-kind']} ${r['rt-ground-section']}`,r['rt-ground-length']||r['rt-cable-length'],'','מטר');});
+  d.trays.forEach(t=>{addItem(map,`${t['tr-type']} ${t['tr-size']}`,t['tr-length'],`${t['tr-install']} ${t['tr-color']? '| צבע: '+t['tr-color']:''} ${t['tr-notes']||''}`,'מטר'); if(t['tr-type']==='תעלת פח סגורה'||t['tr-cover']==='עם מכסה'||t['tr-cover']==='מכסה מחושב אוטומטית') addItem(map,`מכסה ל${t['tr-type']} ${t['tr-size']}`,t['tr-length'],'','מטר');});
+  d.grounding.forEach(g=>{addItem(map,`גיד הארקה ${g['gr-kind']} ${g['gr-section']}`,g['gr-length'],`מקור: ${g['gr-source']} | ${g['gr-body']}`,'מטר'); if(g['gr-connection']) addItem(map,g['gr-connection'],g['gr-points'],`עבור ${g['gr-body']}`,'יח׳');});
+  d.bases.forEach(b=>{if(b['bs-status']==='נדרש חדש') addItem(map,b['bs-type'],b['bs-qty'],b['bs-notes'],'יח׳');});
+  d.signage.forEach(s=>addItem(map,`שלט ${s.name}`,s.qty,s.notes,'יח׳'));
+  if(d.fields.signagePole==='כן') addItem(map,'עמוד 3 צול ייעודי לשילוט',d.fields.signagePoleQty,d.fields.signageNotes,'יח׳');
+  if(d.fields.parkingPaintRequired==='כן') addItem(map,'צביעת חניה',d.fields.parkingPaintQty,`${d.fields.parkingPaintType||''} ${d.fields.parkingPaintNotes||''}`,'חניה');
+  if(d.fields.switchSize&&d.fields.switchSize!=='לא נדרש') addItem(map,`סוויץ׳ ${d.fields.switchSize}`,1,'תקשורת','יח׳');
+  addItem(map,'מודם סלולרי',d.fields.modemQty,'תקשורת','יח׳'); addItem(map,'סים',d.fields.simQty,'תקשורת','יח׳');
+  d.manual.forEach(m=>addItem(map,m['mi-name'],m['mi-qty'],m['mi-notes'],m['mi-unit']||'יח׳'));
+  return Object.values(map);
+}
+function cleanRows(rows){return (rows||[]).filter(r=>Object.values(r).some(v=>String(v||'').trim()));}
+function tableHtml(rows, headers, keys){ rows=cleanRows(rows); if(!rows.length) return ''; return `<table><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${keys.map(k=>`<td>${esc(r[k])}</td>`).join('')}</tr>`).join('')}</table>`;}
+function sec(title, content){ content=(content||'').trim(); if(!content) return ''; return `<div class="sec"><h2>${esc(title)}</h2>${content}</div>`; }
+function noteP(text){ return text?`<div class="note">${esc(text)}</div>`:''; }
+function reportHTML(){const d=getData(), f=d.fields, eq=equipmentList(d); const photoImgs=photos.map(ph=>{const src=typeof ph==='string'?ph:ph.src, cat=typeof ph==='string'?'כללי':ph.category; return `<div><div style="font-weight:bold;color:#43b02a;margin:2px 0">${esc(cat)}</div><img src="${src}"></div>`}).join('');
+const projectGrid=`<div class="grid">${field('שם הסוקר',f.reviewer)}${field('תאריך',f.reviewDate)}${field('שם הפרויקט',f.projectName)}${field('לקוח',f.clientName)}${field('כתובת',f.projectAddress)}${field('סוג אתר',f.siteType)}${field('איש קשר',f.contactName)}${field('טלפון',f.contactPhone)}${field('מייל',f.contactEmail)}</div>${noteP(f.generalNotes)}`;
+const capacityGrid=`<div class="grid">${field('מקור נתון',f.capacitySource)}${field('חיבור קיים',f.existingConnection==='אחר'?f.existingConnectionOther:f.existingConnection)}${field('שנאי',f.transformerSize==='אחר'?f.transformerSizeOther:f.transformerSize)}${field('צריכת שיא',f.peakDemand)}${field('זרם פנוי',f.freeCurrent)}${field('ניהול עומסים',f.loadManagement)}${field('מונה ייעודי',f.dedicatedMeter)}${field('מסקנת סוקר',f.capacityConclusion)}</div>${noteP(f.capacityNotes)}`;
+const commGrid=`${tableHtml(d.signage,['סוג שלט','כמות','הערות'],['name','qty','notes'])}<div class="grid">${field('עמוד שילוט',f.signagePole)}${field('כמות עמודי שילוט',f.signagePoleQty)}${field('מערכת ניהול',f.managementSystem)}${field('ארון תקשורת',f.commCabinet)}${field('מיקום ארון',f.commCabinetLocation)}${field('סוויץ׳',f.switchSize)}${field('מודמים',f.modemQty)}${field('סימים',f.simQty)}</div>${noteP(f.commNotes)}`;
+const infraGrid=`<div class="grid">${field('קיימות תשתיות',f.existingInfra)}${field('שימוש בתשתית קיימת',f.reuseInfra)}${field('מקום פנוי',f.infraSpace)}</div>${noteP(f.infraNotes)}`;
+const painting=`<div class="grid">${field('נדרשת צביעת חניות',f.parkingPaintRequired)}${field('כמות חניות לצביעה',f.parkingPaintQty)}${field('סימון החניה',f.parkingPaintType)}</div>${noteP(f.parkingPaintNotes)}`;
+return `<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8"><style>@page{size:A4;margin:12mm}body{font-family:Arial,sans-serif;direction:rtl;color:#111;margin:0;font-size:12px}.head{display:flex;justify-content:space-between;border-bottom:3px solid #43b02a;padding-bottom:10px;margin-bottom:14px}.logo{width:150px}.co{direction:ltr;text-align:left;color:#555;line-height:1.5}h1{font-size:20px;color:#43b02a;margin:0 0 8px}.sec{break-inside:avoid;margin:12px 0}.sec h2{background:#050505;color:#fff;padding:7px 10px;border-radius:5px;font-size:14px;margin:0 0 8px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 12px}.f{border-bottom:1px solid #e5e7eb;padding:5px}.l{font-size:10px;color:#43b02a;font-weight:bold}.v{font-weight:bold;white-space:pre-wrap}table{width:100%;border-collapse:collapse;margin:6px 0;table-layout:fixed}th,td{border:1px solid #ddd;padding:5px;text-align:right;vertical-align:top;word-break:break-word}th{background:#f0fdf4}.note{background:#fff200;border:2px solid #f59e0b;padding:8px;border-radius:6px;font-weight:bold}.photos{display:flex;flex-wrap:wrap;gap:8px}.photos img{max-width:180px;max-height:135px;border:1px solid #ddd;border-radius:6px;object-fit:cover}.sign{margin-top:28px;border-top:1px solid #ddd;padding-top:12px;text-align:center}.signature{height:55px}</style></head><body><div class="head"><div><img class="logo" src="edge-logo.jpg" onerror="this.style.display='none'"><h1>דוח סיור שטח – פרויקט טעינה</h1></div><div class="co">Edge Control Ltd<br>Tel: 073-3318500<br>office@edgecontrol.net<br>www.EdgeControl.co.il</div></div>
+${sec('פרטי פרויקט',projectGrid)}
+${sec('סיכום קיבולת חשמלית',capacityGrid)}
+${sec('עמדות טעינה',tableHtml(d.chargers,['סוג','יצרן','דגם','הספק','חיבור','מנוהלת','מודם','סליקה','ספק','כמות','התקנה','בסיס'],['ch-type','ch-maker','ch-model','ch-power','ch-connector','ch-managed','ch-modem','ch-payment','ch-supplier','ch-qty','ch-install','ch-base']))}
+${sec('לוחות קיימים',tableHtml(d.existingPanels,['שם','מיקום','יצרן','ראשי','זרם פנוי','מפסק פנוי','מספר מעגל','גודל','חיבור למפסק קיים','מקום למפסק','חיבור מהפסים','יציאה ממפסק חדש','מהדקים','כמות מהדקים','חתך כבל יוצא','מקום לפחת','מקום למונה','פסי צבירה','הערות'],['ep-name','ep-location','ep-maker','ep-main','ep-free','ep-spare','ep-circuit','ep-spare-size','ep-existing-conn','ep-new-space','ep-new-feed-conn','ep-new-out-conn','ep-din-needed','ep-din-qty','ep-out-section','ep-rcd-space','ep-meter-space','ep-busbar','ep-notes']))}
+${sec('לוחות חלוקה חדשים',tableHtml(d.newPanels,['שם','מיקום','מארז','התקנה','כניסה','מוזן מלוח','מספר מעגל','הזנה','מפסק','חיבור מפסק','חיבור מהפסים','יציאה ללוח','מהדקים','כמות מהדקים','חתך כבל יוצא','כבל','אורך','הערות'],['np-name','np-location','np-inout','np-mount','np-entry','np-fedfrom','np-circuit','np-feedtype','np-feedbreaker','np-breaker-conn','np-busbar-conn','np-out-conn','np-din-needed','np-din-qty','np-out-section','np-cable','np-length','np-notes']))}
+${sec('ציוד בלוח החדש',tableHtml(d.panelEquip,['מספר מעגל','סוג','פחת בטור','גודל / זרם','כמות','יזין כבל','הערות'],['pe-circuit','pe-type','pe-rcd-series','pe-size','pe-qty','pe-cable','pe-notes']))}
+${sec('מקטעי תוואי וכבלי הזנה',tableHtml(d.routes,['מקור','יעד','סוג כבל','חתך','אורך כבל','הארקה','סוג גיד','חתך גיד','אורך גיד','אופן התקנה','הערות'],['rt-source','rt-dest','rt-cable-type','rt-section','rt-cable-length','rt-ground-type','rt-ground-kind','rt-ground-section','rt-ground-length','rt-method','rt-notes']))}
+${sec('תעלות',tableHtml(d.trays,['סוג','גודל','אורך','מכסה','אופן התקנה','צבע','הערות'],['tr-type','tr-size','tr-length','tr-cover','tr-install','tr-color','tr-notes']))}
+${sec('הארקת גופים מתכתיים',tableHtml(d.grounding,['גוף','מקור','מוליך','חתך','אורך','חיבור','נקודות','הערות'],['gr-body','gr-source','gr-kind','gr-section','gr-length','gr-connection','gr-points','gr-notes']))}
+${sec('קידוחים',tableHtml(d.drills,['קוטר','כמות','סוג','מיקום','הערות'],['dr-diameter','dr-qty','dr-type','dr-location','dr-notes']))}
+${sec('עבודות אזרחיות ובסיסי בטון',tableHtml(d.civil,['סוג עבודה','כמות','יחידה','הערות'],['cv-type','cv-qty','cv-unit','cv-notes'])+tableHtml(d.bases,['סוג בסיס','סטטוס','כמות','הערות'],['bs-type','bs-status','bs-qty','bs-notes'])+'<div class="note">הכנת בסיסי בטון בהתאם לתכניות היצרן / תכניות ההתקנה המאושרות של הפרויקט.</div>')}
+${sec('צביעת חניות',painting)}
+${sec('שילוט ותקשורת',commGrid)}
+${sec('תשתיות קיימות',infraGrid)}
+${sec('רשימת ציוד מחושבת',eq.length?`<table><tr><th>פריט</th><th>יחידת מידה</th><th>כמות</th><th>הערות</th></tr>${eq.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.unit)}</td><td>${esc(x.qty)}</td><td>${esc(x.notes)}</td></tr>`).join('')}</table>`:'')}
+${sec('תמונות',photoImgs?`<p><b>תמונות שסומנו:</b> ${esc(d.photoChecks.join(', '))}</p><div class="photos">${photoImgs}</div>`:'')}
+<div class="sign"><div class="signature"></div><div>חתימת לקוח</div></div></body></html>`}
+function field(label,value){return value?`<div class="f"><div class="l">${esc(label)}</div><div class="v">${esc(value)}</div></div>`:''}
+function showReport(){
+  const missing=[];
+  if(!val('reviewer')) missing.push('שם הסוקר');
+  if(!val('reviewDate')) missing.push('תאריך הסיור');
+  if(!val('projectName')) missing.push('שם הפרויקט');
+  if(!val('projectAddress')) missing.push('כתובת הפרויקט');
+  if(missing.length && !confirm('שדות חסרים: '+missing.join(', ')+'.\nלהפיק דוח בכל זאת?')) return;
+  const html=reportHTML(); $('#reportFrame').srcdoc=html; $('#formScreen').style.display='none'; $('#reportScreen').style.display='block'; window.scrollTo(0,0)}
+function backToForm(){ $('#reportScreen').style.display='none'; $('#formScreen').style.display='block'; }
+function printReport(){ const fr=document.getElementById('reportFrame'); try{ fr.contentWindow.focus(); fr.contentWindow.print(); }catch(e){ const w=window.open('','_blank'); if(w){ w.document.write(reportHTML()); w.document.close(); setTimeout(()=>{w.focus();w.print()},400); } else { alert('הדפדפן חסם את חלון ההדפסה. אפשר להשתמש ב"הורד HTML" ואז להדפיס.'); } } }
+function downloadHTML(){const blob=new Blob([reportHTML()],{type:'text/html;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='דוח סיור שטח - פרויקט טעינה.html'; a.click(); URL.revokeObjectURL(a.href)}
+function init(){ if(!loadDraft()){ addChargerRow(); addExistingPanelRow(); addNewPanelRow(); addRouteRow(); addTrayRow(); renderPhotoUploaders(); } $$('#panelEquipTable tbody tr').forEach(bindPanelEquipLogic); $$('#routesTable tbody tr').forEach(bindRouteLogic); bindAutosave(); }
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
