@@ -742,7 +742,7 @@
 
       <table class="form-table">
         <tr><th colspan="4">נתונים כלליים של עמדת הטעינה</th></tr>
-        <tr><td class="label-cell">מפסק הזנה ראשי</td><td class="input-cell"><input data-field="main_feeder_breaker" placeholder="יצרן / דגם / זרם נקוב"></td><td class="label-cell">כבל הזנה</td><td class="input-cell"><input data-field="shared_feeder_cable" placeholder="לדוגמה N2XY 5x16"></td></tr>
+        <tr><td class="label-cell">גודל מפסק הזנת העמדה</td><td class="input-cell"><input data-field="main_feeder_breaker" placeholder="יצרן / דגם / זרם נקוב"></td><td class="label-cell">כבל הזנת העמדה</td><td class="input-cell"><input data-field="shared_feeder_cable" placeholder="לדוגמה N2XY 5x16"></td></tr>
         <tr><td class="label-cell">תצורת העמדה</td><td class="input-cell"><select id="charger_configuration" data-field="charger_configuration"><option value="">בחר...</option><option value="single">עמדה יחידה</option><option value="dual_ac">עמדת AC כפולה – שני שקעים</option></select></td><td class="label-cell">שיטת התקנה</td><td class="input-cell"><select id="mounting_method" data-field="mounting_method"><option value="">בחר...</option><option>על קיר</option><option>סטנד בודד</option><option>סטנד זוגי</option><option>על בסיס בטון</option></select></td></tr>
         <tr><td class="label-cell">צילום מפסק ההזנה לעמדה</td><td class="input-cell" colspan="3"><label class="image-box" for="feeder_photo">צילום / העלאת תמונה</label><input class="image-input" id="feeder_photo" type="file" accept="image/*" data-image-field="feeder_photo"><div class="image-preview" id="preview-feeder_photo"></div></td></tr>
         <tr>
@@ -1228,7 +1228,7 @@
             <tr><th colspan="4">נתונים כלליים של עמדת הטעינה</th></tr>
             ${reportRow("שם היצרן", v("manufacturer"), "דגם", v("model"))}
             ${reportRow("תצורת העמדה", data.charger_configuration==="dual_ac"?"AC כפולה – שני שקעים":data.charger_configuration==="single"?"עמדה יחידה":"", "שיטת התקנה", v("mounting_method"))}
-            ${reportRow("מפסק הזנה ראשי",v("main_feeder_breaker"),"כבל הזנה",v("shared_feeder_cable"))}
+            ${reportRow("גודל מפסק הזנת העמדה",v("main_feeder_breaker"),"כבל הזנת העמדה",v("shared_feeder_cable"))}
             ${reportRow("סריאלי",data.charger_configuration==="dual_ac"?"":v("serial"), "כתובת התקנת עמדת הטעינה", v("address"))}
             ${reportRow("תיאור מקום ההתקנה",v("location_desc"))}
             ${data.charger_configuration==="dual_ac"?"":reportRow("ההספק המותקן [kW]", v("power_kw"), "זרם מרבי [A]", v("max_current"))}
