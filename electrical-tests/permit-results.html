@@ -1135,7 +1135,7 @@
       renderPreviews();
     }
 
-    function resizeImage(file, maxSize=1280, quality=.72){
+    function resizeImage(file, maxSize=2048, quality=.9){
       return new Promise(resolve => {
         const reader = new FileReader();
         reader.onload = event => {
@@ -1209,23 +1209,30 @@
     function imageReport(){return "";}
     function combinedImagesReport(){
       const dual=data.charger_configuration==="dual_ac";
+      // charger_photo is the overall stand photo in double-pillar mode.
       const items=[
-        ...(images.feeder_photo||[]).map(src=>({title:"תמונה של מפסק ההזנה",src})),
+        ...(images.charger_photo||[]).map(src=>({title:dual?"מבט כללי – פילר טעינה כפול":"תמונה של עמדת הטעינה",src})),
         ...(dual?[
           ...(images.dual_1_photo||[]).map(src=>({title:"תמונה של עמדת טעינה מס׳ 1",src})),
           ...(images.dual_2_photo||[]).map(src=>({title:"תמונה של עמדת טעינה מס׳ 2",src}))
-        ]:(images.charger_photo||[]).map(src=>({title:"תמונה של עמדת הטעינה",src})))
+        ]:[]),
+        ...(images.feeder_photo||[]).map(src=>({title:"תמונה של מפסק ההזנה",src}))
       ];
       if(!items.length)return "";
       const rows=[];
       for(let i=0;i<items.length;i+=3){
-        const cells=items.slice(i,i+3).map(item=>'<td style="width:33.333%;vertical-align:top;padding:5px;border:1px solid #d9dde3;text-align:center"><div style="font-size:13px;font-weight:900;direction:rtl;margin-bottom:5px">'+escapeHTML(item.title)+'</div><img style="display:block;width:100%;height:130px;object-fit:contain" src="'+item.src+'"></td>');
+        const cells=items.slice(i,i+3).map(item=>
+          '<td style="width:33.333%;vertical-align:top;padding:7px;border:1px solid #d9dde3;text-align:center;background:#fff">'+
+          '<div style="font-size:13px;font-weight:900;direction:rtl;margin-bottom:8px">'+escapeHTML(item.title)+'</div>'+
+          '<div style="height:210px;display:flex;align-items:center;justify-content:center">'+
+          '<img style="display:block;width:auto!important;height:auto!important;max-width:100%!important;max-height:205px!important;object-fit:contain!important" src="'+item.src+'" alt="'+escapeHTML(item.title)+'"></div></td>'
+        );
         while(cells.length<3)cells.push('<td style="width:33.333%"></td>');
         rows.push('<table style="width:100%;table-layout:fixed;border-spacing:5px;direction:rtl"><tr>'+cells.join('')+'</tr></table>');
       }
       return '<section class="report-photo-section"><div style="background:#050505;color:white;padding:5px 9px;text-align:right;font-weight:900">תיעוד מצולם</div>'+rows.join('')+'</section>';
     }
-    function checkerStamp(){
+        function checkerStamp(){
       return `
         <div class="stamp-only">
           <img src="${CHECKER_STAMP_IMAGE}" alt="חותמת בודק">
@@ -1395,7 +1402,7 @@
         const widthScale=availW/canvas.width;
         const naturalHeight=canvas.height*widthScale;
         const onePageFactor=Math.min(1,availH/naturalHeight);
-        if(onePageFactor>=0.82){
+        if(onePageFactor>=0.94){
           const w=canvas.width*widthScale*onePageFactor;
           const h=canvas.height*widthScale*onePageFactor;
           pdf.addImage(canvas.toDataURL("image/png"),"PNG",(210-w)/2,10,w,h);
