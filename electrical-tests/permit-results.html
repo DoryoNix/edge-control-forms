@@ -726,6 +726,10 @@
     .report-table{direction:rtl!important}
     .report-table th,.report-table .r-label{direction:rtl!important;text-align:right!important}
     .report-table .r-value{unicode-bidi:plaintext}
+
+    .report-photo-section .pdf-photo-caption{display:block!important;position:relative!important;z-index:1!important;min-height:24px!important;height:auto!important;line-height:1.35!important;white-space:normal!important;overflow:visible!important}
+    .report-photo-section .pdf-photo-frame{position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;margin-top:4px!important}
+    .report-photo-section .pdf-photo-frame img{position:static!important;max-width:100%!important;width:auto!important;height:auto!important;object-fit:contain!important}
 </style>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1224,10 +1228,10 @@
       const rows=[];
       for(let i=0;i<items.length;i+=3){
         const cells=items.slice(i,i+3).map(item=>
-          '<td style="width:33.333%;vertical-align:top;padding:7px;border:1px solid #d9dde3;text-align:center;background:#fff">'+
-          '<div style="font-size:13px;font-weight:900;direction:rtl;margin-bottom:8px">'+escapeHTML(item.title)+'</div>'+
-          '<div style="height:210px;display:flex;align-items:center;justify-content:center">'+
-          '<img style="display:block;width:auto!important;height:auto!important;max-width:100%!important;max-height:205px!important;object-fit:contain!important" src="'+item.src+'" alt="'+escapeHTML(item.title)+'"></div></td>'
+          '<td class="pdf-photo-cell" style="width:33.333%;vertical-align:top;padding:5px;border:1px solid #d9dde3;text-align:center;background:#fff">'+
+          '<div class="pdf-photo-caption" style="display:block;position:relative;min-height:24px;padding:3px 2px 6px;line-height:1.3;direction:rtl;font-size:12px;font-weight:900;text-align:center;white-space:normal">'+escapeHTML(item.title)+'</div>'+
+          '<div class="pdf-photo-frame" style="display:flex;position:relative;height:160px;align-items:center;justify-content:center;overflow:hidden">'+
+          '<img style="display:block;position:static;width:auto!important;height:auto!important;max-width:100%!important;max-height:156px!important;object-fit:contain!important" src="'+item.src+'" alt="'+escapeHTML(item.title)+'"></div></td>'
         );
         while(cells.length<3)cells.push('<td style="width:33.333%"></td>');
         rows.push('<table style="width:100%;table-layout:fixed;border-spacing:5px;direction:rtl"><tr>'+cells.join('')+'</tr></table>');
@@ -1404,7 +1408,7 @@
           compact.textContent=`
             .report-inner{font-size:12px!important;line-height:1.24!important}
             .report-header{margin-bottom:5px!important;padding-bottom:5px!important}
-            .report-logo{width:140px!important}
+            .report-logo{width:105px!important;max-width:105px!important}
             .report-title{font-size:17px!important;margin:5px 0!important}
             .report-table{margin:4px 0!important}
             .report-table td,.report-table th{padding:2px 5px!important;line-height:1.25!important}
@@ -1412,8 +1416,8 @@
             .report-photo-section{margin:4px 0!important}
             .report-photo-section table{margin:2px 0!important;border-spacing:3px!important}
             .report-photo-section td{padding:3px!important}
-            .report-photo-section td>div:has(img){height:142px!important}
-            .report-photo-section img{max-height:138px!important;max-width:100%!important;width:auto!important;height:auto!important;object-fit:contain!important}
+            .report-photo-section .pdf-photo-caption{min-height:24px!important;height:auto!important;overflow:visible!important}.report-photo-section .pdf-photo-frame{height:130px!important;max-height:130px!important;overflow:hidden!important}
+            .report-photo-section .pdf-photo-frame img{max-height:125px!important;max-width:100%!important;width:auto!important;height:auto!important;object-fit:contain!important}
             .stamp-only{margin-top:3px!important}
             .stamp-only img{max-height:66px!important;width:auto!important}
           `;
