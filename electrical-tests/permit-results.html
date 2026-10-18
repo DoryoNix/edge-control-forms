@@ -802,24 +802,20 @@
       </table>
 
       <table class="form-table" id="dual-ac-section" style="display:none">
-<tr><th colspan="4">4. עמדת AC כפולה – נתונים נפרדים לכל שקע</th></tr>
-<tr><td colspan="4" style="font-size:13px;color:#555">כבל ההזנה ומפסק ההזנה הראשי משותפים לשני השקעים. יש למלא לכל שקע סריאלי, הגנה ותוצאות בדיקה נפרדות.</td></tr>
-<tr><th colspan="4">שקע 1</th></tr>
-<tr><td class="label-cell">שם צרכן – שקע 1</td><td class="input-cell" colspan="3"><input data-field="dual_1_consumer"></td></tr>
-<tr><td class="label-cell">מספר סידורי – שקע 1</td><td class="input-cell"><input data-field="dual_1_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_1_power" type="number"></td></tr>
-<tr><td class="label-cell">זרם נקוב (A)</td><td class="input-cell"><input data-field="dual_1_current" type="number"></td><td class="label-cell">מפסק ייעודי לשקע</td><td class="input-cell"><input data-field="dual_1_breaker"></td></tr>
-<tr><td class="label-cell">מפסק משולב פחת / RCD</td><td class="input-cell"><input data-field="dual_1_rcd" placeholder="סוג, זרם ורגישות"></td><td class="label-cell">תוצאת לולאת תקלה L-L (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_ll"></td></tr>
-<tr><td class="label-cell">תוצאת לולאת תקלה L-N (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_ln"></td><td class="label-cell">תוצאת לולאת תקלה L-PE (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_lpe"></td></tr>
-<tr><td class="label-cell">התנגדות בידוד (MΩ)</td><td class="input-cell"><input data-field="dual_1_insulation"></td><td class="label-cell">בדיקת פחת / הגנה</td><td class="input-cell"><input data-field="dual_1_rcd_test"></td></tr><tr><th colspan="4">שקע 2</th></tr>
-<tr><td class="label-cell">שם צרכן – שקע 2</td><td class="input-cell" colspan="3"><input data-field="dual_2_consumer"></td></tr>
-<tr><td class="label-cell">מספר סידורי – שקע 2</td><td class="input-cell"><input data-field="dual_2_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_2_power" type="number"></td></tr>
-<tr><td class="label-cell">זרם נקוב (A)</td><td class="input-cell"><input data-field="dual_2_current" type="number"></td><td class="label-cell">מפסק ייעודי לשקע</td><td class="input-cell"><input data-field="dual_2_breaker"></td></tr>
-<tr><td class="label-cell">מפסק משולב פחת / RCD</td><td class="input-cell"><input data-field="dual_2_rcd" placeholder="סוג, זרם ורגישות"></td><td class="label-cell">תוצאת לולאת תקלה L-L (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_ll"></td></tr>
-<tr><td class="label-cell">תוצאת לולאת תקלה L-N (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_ln"></td><td class="label-cell">תוצאת לולאת תקלה L-PE (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_lpe"></td></tr>
-<tr><td class="label-cell">התנגדות בידוד (MΩ)</td><td class="input-cell"><input data-field="dual_2_insulation"></td><td class="label-cell">בדיקת פחת / הגנה</td><td class="input-cell"><input data-field="dual_2_rcd_test"></td></tr>
+<tr><th colspan="4">4. פילר AC כפול – נתוני שתי יחידות הטעינה</th></tr>
+<tr><td colspan="4" style="font-size:13px;color:#555">בדיקות לולאת התקלה והבידוד נרשמות פעם אחת עבור קו ההזנה הראשי, בסעיף הבדיקות המשותפות שבהמשך. יש לבצע ולתעד בדיקת פחת לכל יחידת טעינה בנפרד.</td></tr>
+<tr><td class="label-cell">הספק נקוב לכל יחידה (kW)</td><td class="input-cell"><input data-field="dual_common_power" type="number" min="0"></td><td class="label-cell">זרם נקוב לכל יחידה (A)</td><td class="input-cell"><input data-field="dual_common_current" type="number" min="0"></td></tr>
+<tr><th colspan="4">יחידת טעינה 1</th></tr>
+<tr><td class="label-cell">שם עמדה 1</td><td class="input-cell"><input data-field="dual_1_consumer"></td><td class="label-cell">מספר סידורי</td><td class="input-cell"><input data-field="dual_1_serial"></td></tr>
+<tr><td class="label-cell">מפסק ייעודי ליחידה 1</td><td class="input-cell"><input data-field="dual_1_breaker" placeholder="לדוגמה 3x32A"></td><td class="label-cell">הגנת פחת / RCBO ליחידה 1</td><td class="input-cell"><input data-field="dual_1_rcd" placeholder="סוג ורגישות"></td></tr>
+<tr><td class="label-cell">תוצאת בדיקת הפחת – יחידה 1</td><td class="input-cell" colspan="3"><input data-field="dual_1_rcd_test" placeholder="תוצאה שנמדדה / תקין / לא תקין"></td></tr>
+<tr><th colspan="4">יחידת טעינה 2</th></tr>
+<tr><td class="label-cell">שם עמדה 2</td><td class="input-cell"><input data-field="dual_2_consumer"></td><td class="label-cell">מספר סידורי</td><td class="input-cell"><input data-field="dual_2_serial"></td></tr>
+<tr><td class="label-cell">מפסק ייעודי ליחידה 2</td><td class="input-cell"><input data-field="dual_2_breaker" placeholder="לדוגמה 3x32A"></td><td class="label-cell">הגנת פחת / RCBO ליחידה 2</td><td class="input-cell"><input data-field="dual_2_rcd" placeholder="סוג ורגישות"></td></tr>
+<tr><td class="label-cell">תוצאת בדיקת הפחת – יחידה 2</td><td class="input-cell" colspan="3"><input data-field="dual_2_rcd_test" placeholder="תוצאה שנמדדה / תקין / לא תקין"></td></tr>
 </table>
 <table class="form-table">
-        <tr><th colspan="4">5. תוצאות בדיקה והגנות</th></tr>
+        <tr><th colspan="4">5. בדיקות קו ההזנה הראשי והגנות</th></tr>
         <tr>
           <td class="label-cell">תוצאת לולאת תקלה L-L [Ω]</td><td class="input-cell"><input id="lt_ll" data-field="lt_ll"></td>
           <td class="label-cell">תוצאת לולאת תקלה L-N [Ω]</td><td class="input-cell"><input id="lt_ln" data-field="lt_ln"></td>
@@ -829,7 +825,7 @@
           <td class="label-cell">התנגדות מקסימלית מותרת [Ω]</td><td class="input-cell"><input id="max_z" data-field="max_z"></td>
         </tr>
         <tr>
-          <td class="label-cell">התנגדות בידוד מוליכים [MΩ]</td><td class="input-cell"><input id="insulation" data-field="insulation" value="≥999"></td>
+          <td class="label-cell">התנגדות בידוד מוליכים [MΩ]</td><td class="input-cell"><input id="insulation" data-field="insulation" placeholder=">999 (יש להזין תוצאה שנמדדה)"></td>
           <td class="label-cell">סוג הגנה על העמדה</td><td class="input-cell"><input id="protection" data-field="protection"></td>
         </tr>
         <tr>
@@ -1226,9 +1222,34 @@
       return (status||isIntegral)?status+integralText:"";
     }
 
-        function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['שם צרכן', 'consumer'],['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
-    function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";const consumer=document.getElementById("consumer");if(consumer){consumer.required=!dual;consumer.closest("tr").style.display=dual?"none":"";}document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const cell=el.closest("td");if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":""}})}
-    function buildReport(){
+        function dualReport(){
+      if(data.charger_configuration!=="dual_ac")return "";
+      const common=reportRow("הספק נקוב לכל יחידה (kW)",v("dual_common_power"),"זרם נקוב לכל יחידה (A)",v("dual_common_current"));
+      const units=[1,2].map(n=>{
+        const rows=[
+          reportRow("שם עמדה",v("dual_"+n+"_consumer"),"מספר סידורי",v("dual_"+n+"_serial")),
+          reportRow("מפסק ייעודי",v("dual_"+n+"_breaker"),"הגנת פחת / RCBO",v("dual_"+n+"_rcd")),
+          reportRow("תוצאת בדיקת פחת",v("dual_"+n+"_rcd_test"))
+        ].join("");
+        return rows?'<table class="report-table"><tr><th colspan="4">יחידת טעינה '+n+'</th></tr>'+rows+'</table>':"";
+      }).join("");
+      return (common?'<table class="report-table"><tr><th colspan="4">הספק וזרם – פילר AC כפול</th></tr>'+common+'</table>':"")+units;
+    }
+        function syncDual(){
+      const dual=data.charger_configuration==="dual_ac";
+      const el=document.getElementById("dual-ac-section");
+      if(el)el.style.display=dual?"table":"none";
+      const consumer=document.getElementById("consumer");
+      if(consumer){consumer.required=!dual;consumer.closest("tr").style.display=dual?"none":"";}
+      // Shared feeder measurements stay visible for both regular chargers and double pillars.
+      for(const key of ["serial","power_kw","max_current","connectors"]){
+        const field=document.querySelector('[data-field="'+key+'"]');
+        if(!field)continue;
+        const cell=field.closest("td");
+        if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":"";}
+      }
+    }
+        function buildReport(){
       const html = `
         <div class="report-inner" id="pdf-report">
           <div class="report-header">
@@ -1266,9 +1287,9 @@
 
           <table class="report-table">
             <tr><th colspan="4">תוצאות בדיקה</th></tr>
-            ${data.charger_configuration==="dual_ac"?"":reportRow("תוצאת לולאת תקלה L-L [Ω]", v("lt_ll"), "תוצאת לולאת תקלה L-N [Ω]", v("lt_ln"))}
-            ${data.charger_configuration==="dual_ac"?reportRow("התנגדות מקסימלית מותרת [Ω]",v("max_z")):reportRow("תוצאת לולאת תקלה L-PE [Ω]", v("lt_lpe"), "התנגדות מקסימלית מותרת [Ω]", v("max_z"))}
-            ${data.charger_configuration==="dual_ac"?reportRow("סוג הגנה ראשית",v("protection")):reportRow("התנגדות בידוד מוליכים [MΩ]", v("insulation"), "סוג הגנה על העמדה", v("protection"))}
+            ${reportRow("תוצאת לולאת תקלה L-L [Ω]", v("lt_ll"), "תוצאת לולאת תקלה L-N [Ω]", v("lt_ln"))}
+            ${reportRow("תוצאת לולאת תקלה L-PE [Ω]", v("lt_lpe"), "התנגדות מקסימלית מותרת [Ω]", v("max_z"))}
+            ${reportRow("התנגדות בידוד מוליכים [MΩ]", v("insulation"), "סוג הגנה על העמדה", v("protection"))}
             ${reportRow("סוג כבל וחתך נומינלי של הזנת עמדת הטעינה", v("cable"), "", "")}
             ${data.charger_configuration==="dual_ac"?"":reportRow(
               "ממסר פחת Type A 30mA AC",
