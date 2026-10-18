@@ -708,6 +708,11 @@
       justify-content:flex-start;
     }
 
+
+    .report-photos-row{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-start;direction:rtl;margin:9px 0;break-inside:avoid}
+    .report-photo-card{flex:1 1 175px;max-width:calc(50% - 5px);min-width:0;margin:0;padding:5px;border:1px solid #d9dde3;border-radius:8px;background:#fff;text-align:center;break-inside:avoid}
+    .report-photo-card figcaption{font-size:12px;font-weight:800;color:#111;margin:0 0 5px;text-align:center}
+    .report-photo-card img{width:100%!important;max-width:100%!important;height:125px!important;max-height:125px!important;object-fit:contain!important;display:block;background:#fff}
   </style>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1188,14 +1193,11 @@
       `;
     }
 
-    function imageReport(){
-      const list = images.charger_photo || [];
-      if(!list.length) return "";
-      return `
-        <div class="report-images">
-          ${list.map(src => `<img src="${src}" alt="">`).join("")}
-        </div>
-      `;
+    function imageReport(){return "";}
+    function combinedImagesReport(){
+      const groups=[["תמונה של מפסק ההזנה",images.feeder_photo||[]],["תמונה של עמדת הטעינה",images.charger_photo||[]]];
+      const cards=groups.flatMap(([title,list])=>list.map(src=>'<figure class="report-photo-card"><figcaption>'+escapeHTML(title)+'</figcaption><img src="'+src+'" alt="'+escapeHTML(title)+'"></figure>'));
+      return cards.length?'<div class="report-photos-row">'+cards.join('')+'</div>':'';
     }
 
     function checkerStamp(){
@@ -1214,8 +1216,7 @@
       return (status||isIntegral)?status+integralText:"";
     }
 
-    function feederImageReport(){const list=images.feeder_photo||[];return list.length?'<div class="report-images">'+list.map(src=>'<img src="'+src+'" alt="מפסק הזנה">').join('')+'</div>':''}
-    function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['שם צרכן', 'consumer'],['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
+        function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['שם צרכן', 'consumer'],['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
     function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";const consumer=document.getElementById("consumer");if(consumer){consumer.required=!dual;consumer.closest("tr").style.display=dual?"none":"";}document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const cell=el.closest("td");if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":""}})}
     function buildReport(){
       const html = `
@@ -1268,9 +1269,9 @@
           </table>
 
           ${dualReport()}
-          ${feederImageReport()}
+
           ${standardText()}
-          ${imageReport()}
+          ${combinedImagesReport()}
 
           <table class="report-table">
             <tr><th colspan="4">פרטי בעל עמדת הטעינה ושם החשמלאי המבצע:</th></tr>
