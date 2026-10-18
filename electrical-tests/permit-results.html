@@ -1216,7 +1216,7 @@
 
     function feederImageReport(){const list=images.feeder_photo||[];return list.length?'<div class="report-images">'+list.map(src=>'<img src="'+src+'" alt="מפסק הזנה">').join('')+'</div>':''}
     function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['שם צרכן', 'consumer'],['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
-    function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const cell=el.closest("td");if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":""}})}
+    function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";const consumer=document.getElementById("consumer");if(consumer){consumer.required=!dual;consumer.closest("tr").style.display=dual?"none":"";}document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const cell=el.closest("td");if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":""}})}
     function buildReport(){
       const html = `
         <div class="report-inner" id="pdf-report">
@@ -1235,7 +1235,7 @@
 
           <table class="report-table">
             <tr><th colspan="4">פרטים כלליים</th></tr>
-            ${reportRow("שם הצרכן", v("consumer"), "מקור הזנה / לוח מזין", v("feed_source"))}
+            ${reportRow("שם הצרכן",data.charger_configuration==="dual_ac"?"":v("consumer"), "מקור הזנה / לוח מזין", v("feed_source"))}
             ${reportRow("סוג הבדיקה", v("inspection_type"), "תאריך הבדיקה", v("date"))}
           </table>
 
