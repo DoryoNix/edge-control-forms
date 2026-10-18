@@ -94,7 +94,7 @@
       border-bottom:3px solid var(--green);
       padding:10px 12px;
       font-size:15px;
-      text-align:left;direction:ltr;
+      text-align:right;direction:rtl;
     }
     .form-table td {
       border:1px solid var(--border);
@@ -713,7 +713,20 @@
     .report-photo-card{flex:1 1 175px;max-width:calc(50% - 5px);min-width:0;margin:0;padding:5px;border:1px solid #d9dde3;border-radius:8px;background:#fff;text-align:center;break-inside:avoid}
     .report-photo-card figcaption{font-size:12px;font-weight:800;color:#111;margin:0 0 5px;text-align:center}
     .report-photo-card img{width:100%!important;max-width:100%!important;height:125px!important;max-height:125px!important;object-fit:contain!important;display:block;background:#fff}
-  </style>
+  
+    /* Consistent Hebrew RTL labels and headings; mixed Latin identifiers remain readable. */
+    .form-table{direction:rtl!important}
+    .form-table th,.form-table .label-cell{direction:rtl!important;text-align:right!important;unicode-bidi:plaintext}
+    .form-table .input-cell{direction:rtl;text-align:right}
+    .form-table input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+    .form-table textarea,.form-table select{ text-align:right; unicode-bidi:plaintext; }
+    .form-table .multi-choice,.form-table .check-options{direction:rtl}
+    .form-table .multi-choice label{direction:rtl;text-align:right}
+    .form-table input[type="checkbox"],.form-table input[type="radio"]{direction:rtl}
+    .report-table{direction:rtl!important}
+    .report-table th,.report-table .r-label{direction:rtl!important;text-align:right!important}
+    .report-table .r-value{unicode-bidi:plaintext}
+</style>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
