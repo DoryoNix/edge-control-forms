@@ -1195,9 +1195,19 @@
 
     function imageReport(){return "";}
     function combinedImagesReport(){
-      const groups=[["תמונה של מפסק ההזנה",images.feeder_photo||[]],["תמונה של עמדת הטעינה",images.charger_photo||[]]];
-      const cards=groups.flatMap(([title,list])=>list.map(src=>'<figure class="report-photo-card"><figcaption>'+escapeHTML(title)+'</figcaption><img src="'+src+'" alt="'+escapeHTML(title)+'"></figure>'));
-      return cards.length?'<div class="report-photos-row">'+cards.join('')+'</div>':'';
+      const items=[
+        ...(images.feeder_photo||[]).map(src=>({title:"תמונה של מפסק ההזנה",src})),
+        ...(images.charger_photo||[]).map(src=>({title:"תמונה של עמדת הטעינה",src}))
+      ];
+      if(!items.length)return "";
+      const rows=[];
+      for(let i=0;i<items.length;i+=3){
+        const current=items.slice(i,i+3);
+        const cells=current.map(item=>'<td style="width:33.333%;vertical-align:top;padding:5px;border:1px solid #d9dde3;text-align:center;background:#fff"><div style="direction:rtl;text-align:center;font-size:13px;font-weight:900;color:#111;margin-bottom:6px;min-height:20px">'+escapeHTML(item.title)+'</div><img style="display:block;width:100%;height:130px;max-height:130px;object-fit:contain;background:#fff" src="'+item.src+'" alt="'+escapeHTML(item.title)+'"></td>');
+        while(cells.length<3)cells.push('<td style="width:33.333%;border:none"></td>');
+        rows.push('<table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:5px;margin:6px 0;direction:rtl"><tbody><tr>'+cells.join('')+'</tr></tbody></table>');
+      }
+      return '<section class="report-photo-section" style="margin:8px 0;direction:rtl"><div style="font-weight:900;background:#050505;color:#fff;border-bottom:3px solid #43b02a;padding:5px 9px;text-align:right">תיעוד מצולם</div>'+rows.join('')+'</section>';
     }
 
     function checkerStamp(){
