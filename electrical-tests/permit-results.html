@@ -709,6 +709,8 @@
     }
 
   </style>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -1152,6 +1154,7 @@
         approvalTextValue = "המערכת לא הותקנה כנדרש בחוק, בתקנות ובהנחיות, והיא לא מאושרת לחיבור עד לתיקון הליקויים המפורטים בדו״ח הבדיקה.";
       }
 
+      if(!approvalTextValue && !v("defects"))return "";
       return `
         <div class="report-check">
           <strong>הצהרת בעל רישיון חשמלאי בודק:</strong>
@@ -1189,12 +1192,12 @@
       const status = v(statusField);
       const isIntegral = data[integralField] === true || data[integralField] === "true" || data[integralField] === "on";
       const integralText = isIntegral ? " | אינטגרלי בעמדת הטעינה" : "";
-      return status + integralText;
+      return (status||isIntegral)?status+integralText:"";
     }
 
     function feederImageReport(){const list=images.feeder_photo||[];return list.length?'<div class="report-images">'+list.map(src=>'<img src="'+src+'" alt="מפסק הזנה">').join('')+'</div>':''}
     function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
-    function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const row=el.closest("tr");if(row)row.style.display=dual?"none":""})}
+    function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const cell=el.closest("td");if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":""}})}
     function buildReport(){
       return `
         <div class="report-inner" id="pdf-report">
@@ -1265,7 +1268,7 @@
           </table>
 
           ${approvalText()}
-          ${checkerStamp()}
+          ${v("approval_status")?checkerStamp():""}
         </div>
       `;
     }
@@ -1287,44 +1290,36 @@
       return "היתר הפעלה לעמדת טעינה עם תוצאות בדיקה" + (parts.length ? " - " + parts.join(" - ") : "");
     }
 
-    function printReport(){
-      if(!$("#report").classList.contains("show")) createReport();
-      const win = window.open("", "_blank");
-      if(!win){
-        alert("הדפדפן חסם את חלון ההדפסה. יש לאפשר Popups.");
-        return;
-      }
-      win.document.open();
-      win.document.write(`
-        <!DOCTYPE html>
-        <html dir="rtl" lang="he">
-        <head>
-          <meta charset="UTF-8"><meta name="viewport" content="width=1024, initial-scale=1.0">
-          <title>${escapeHTML(fileBase())}</title>
-          <style>${document.querySelector("style").innerHTML}</style>
-        </head>
-        <body>
-          <section class="report show">${buildReport()}</section>
-          <script>
-            function doPrint(){ window.focus(); window.print(); }
-            var imgs = Array.from(document.images || []);
-            if(!imgs.length){ setTimeout(doPrint, 400); }
-            else{
-              var left = imgs.length;
-              var done = function(){ left--; if(left <= 0) setTimeout(doPrint, 250); };
-              imgs.forEach(function(img){
-                if(img.complete) done();
-                else{ img.onload = done; img.onerror = done; }
-              });
-              setTimeout(doPrint, 1500);
-            }
-          <\/script>
-        </body>
-        </html>
-      `);
-      win.document.close();
+    async function printReport(){
+      if(!window.html2canvas||!window.jspdf){alert("רכיב הורדת PDF לא נטען. יש לבדוק חיבור לאינטרנט.");return;}
+      if(!data.consumer||!data.date){alert("יש למלא שם צרכן ותאריך בדיקה לפני הפקת PDF.");return;}
+      const btn=document.getElementById("print-pdf");if(btn){btn.disabled=true;btn.textContent="מכין PDF...";}
+      let root;
+      try{
+        root=document.createElement("div");root.innerHTML=buildReport();
+        root.style.cssText="position:fixed;top:0;left:-20000px;width:780px;background:#fff;padding:12px;direction:rtl;font-family:Heebo,Arial,sans-serif";
+        document.body.appendChild(root);
+        await document.fonts.ready;
+        await Promise.all([...root.querySelectorAll("img")].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;})));
+        const canvas=await window.html2canvas(root,{scale:2,backgroundColor:"#fff",useCORS:true,logging:false,windowWidth:1100});
+        const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",compress:true});const availW=190,availH=277;
+        const pages=(canvas.height*availW/canvas.width<=availH)?1:2;
+        const slice=Math.ceil(canvas.height/pages);
+        for(let i=0;i<pages;i++){
+          const y=i*slice,h=Math.min(slice,canvas.height-y);if(!h)continue;
+          const part=document.createElement("canvas");part.width=canvas.width;part.height=h;
+          part.getContext("2d").drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+          if(i)pdf.addPage();
+          const scale=Math.min(availW/part.width,availH/part.height);
+          const w=part.width*scale,hh=part.height*scale;
+          pdf.addImage(part.toDataURL("image/jpeg",.93),"JPEG",(210-w)/2,10,w,hh);
+        }
+        const clean=x=>String(x||"").replace(/[\\/:*?"<>|\x00-\x1f]/g,"-").trim().slice(0,80);
+        const serial=data.charger_configuration==="dual_ac"?[data.dual_1_serial,data.dual_2_serial].filter(Boolean).join("_"):data.serial;
+        pdf.save([clean(data.consumer),clean(serial||"ללא-סריאלי"),clean(data.date)].join(" - ")+".pdf");
+      }catch(error){console.error(error);alert("נכשלה הפקת PDF. מומלץ להפחית תמונות ולנסות שוב.")}
+      finally{if(root)root.remove();if(btn){btn.disabled=false;btn.textContent="הורד PDF";}}
     }
-
 
     window.createReport = createReport;
     window.printReport = printReport;
