@@ -1297,7 +1297,7 @@
             <img class="report-logo" src="${LOGO_PATH}" alt="Edge Control" onerror="this.style.display='none'">
           </div>
 
-          <div class="report-title">טופס היתר הפעלה לעמדת טעינה לרכב חשמלי</div>
+          <div class="report-title">${data.approval_status==="מאושר לחיבור"?"טופס היתר הפעלה לעמדת טעינה לרכב חשמלי":"דוח בדיקת עמדת טעינה – "+(data.approval_status==="לא מאושר לחיבור"?"לא מאושר לחיבור":"טיוטה ללא החלטת בודק")}</div>
 
           <table class="report-table">
             <tr><th colspan="4">פרטים כלליים</th></tr>
