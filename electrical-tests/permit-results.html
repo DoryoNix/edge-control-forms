@@ -1318,9 +1318,11 @@
     }
 
     let pdfGenerationInProgress=false;
+    let lastPdfDownloadAt=0;
     async function printReport(){
-      if(pdfGenerationInProgress)return;
+      if(pdfGenerationInProgress || Date.now()-lastPdfDownloadAt<5000)return;
       pdfGenerationInProgress=true;
+      lastPdfDownloadAt=Date.now();
       if(!window.html2canvas||!window.jspdf){pdfGenerationInProgress=false;alert("רכיב הורדת PDF לא נטען. יש לבדוק חיבור לאינטרנט.");return;}
       if(!(data.consumer||(data.charger_configuration==="dual_ac"&&(data.dual_1_consumer||data.dual_2_consumer)))||!data.date){pdfGenerationInProgress=false;alert("יש למלא שם צרכן ותאריך בדיקה לפני הפקת PDF.");return;}
       const btn=document.getElementById("print-pdf");if(btn){btn.disabled=true;btn.textContent="מכין PDF...";}
@@ -1362,7 +1364,17 @@
         const clean=x=>String(x||"").replace(/[\\/:*?"<>|\x00-\x1f]/g,"-").trim().slice(0,80);
         const serial=data.charger_configuration==="dual_ac"?[data.dual_1_serial,data.dual_2_serial].filter(Boolean).join("_"):data.serial;
         const client=data.charger_configuration==="dual_ac"?[data.dual_1_consumer,data.dual_2_consumer].filter(Boolean).join("_")||data.consumer:data.consumer;
-        pdf.save([clean(client),clean(serial||"ללא-סריאלי"),clean(data.date)].join(" - ")+".pdf");
+        const filename=[clean(client),clean(serial||"ללא-סריאלי"),clean(data.date)].join(" - ")+".pdf";
+        // One explicit download action; do not call jsPDF.save(), which can trigger
+        // additional save behavior in some browser integrations.
+        const blob=pdf.output("blob");
+        const url=URL.createObjectURL(blob);
+        const anchor=document.createElement("a");
+        anchor.href=url;anchor.download=filename;anchor.style.display="none";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),60000);
       }catch(error){console.error(error);alert("נכשלה הפקת PDF. מומלץ להפחית תמונות ולנסות שוב.")}
       finally{pdfGenerationInProgress=false;if(root)root.remove();if(btn){btn.disabled=false;btn.textContent="הורד PDF";}}
     }
@@ -1410,7 +1422,11 @@
       const clearBtn = document.getElementById("clear-draft");
 
       if(makeBtn) makeBtn.addEventListener("click", createReport);
-      if(printBtn) printBtn.addEventListener("click", printReport);
+      if(printBtn) printBtn.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        printReport();
+      }, {capture:true});
       if(clearBtn) clearBtn.addEventListener("click", clearDraft);
 
       window.addEventListener("beforeunload", saveDraft);
