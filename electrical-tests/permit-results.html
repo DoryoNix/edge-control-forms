@@ -742,6 +742,7 @@
 
       <table class="form-table">
         <tr><th colspan="4">נתונים כלליים של עמדת הטעינה</th></tr>
+        <tr><td class="label-cell">מפסק הזנה ראשי משותף</td><td class="input-cell"><input data-field="main_feeder_breaker" placeholder="יצרן / דגם / זרם נקוב"></td><td class="label-cell">כבל הזנה משותף</td><td class="input-cell"><input data-field="shared_feeder_cable" placeholder="לדוגמה N2XY 5x16"></td></tr>
         <tr><td class="label-cell">תצורת העמדה</td><td class="input-cell"><select id="charger_configuration" data-field="charger_configuration"><option value="">בחר...</option><option value="single">עמדה יחידה</option><option value="dual_ac">עמדת AC כפולה – שני שקעים</option></select></td><td class="label-cell">שיטת התקנה</td><td class="input-cell"><select id="mounting_method" data-field="mounting_method"><option value="">בחר...</option><option>על קיר</option><option>סטנד בודד</option><option>סטנד זוגי</option><option>על בסיס בטון</option></select></td></tr>
         <tr><td class="label-cell">צילום מפסק ההזנה לעמדה</td><td class="input-cell" colspan="3"><label class="image-box" for="feeder_photo">צילום / העלאת תמונה</label><input class="image-input" id="feeder_photo" type="file" accept="image/*" data-image-field="feeder_photo"><div class="image-preview" id="preview-feeder_photo"></div></td></tr>
         <tr>
@@ -1199,7 +1200,7 @@
     function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
     function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const cell=el.closest("td");if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":""}})}
     function buildReport(){
-      return `
+      const html = `
         <div class="report-inner" id="pdf-report">
           <div class="report-header">
             <div class="company">
@@ -1224,6 +1225,7 @@
             <tr><th colspan="4">נתונים כלליים של עמדת הטעינה</th></tr>
             ${reportRow("שם היצרן", v("manufacturer"), "דגם", v("model"))}
             ${reportRow("תצורת העמדה", data.charger_configuration==="dual_ac"?"AC כפולה – שני שקעים":data.charger_configuration==="single"?"עמדה יחידה":"", "שיטת התקנה", v("mounting_method"))}
+            ${reportRow("מפסק הזנה ראשי משותף",v("main_feeder_breaker"),"כבל הזנה משותף",v("shared_feeder_cable"))}
             ${reportRow("סריאלי",data.charger_configuration==="dual_ac"?"":v("serial"), "כתובת התקנת עמדת הטעינה", v("address"))}
             ${reportRow("תיאור מקום ההתקנה",v("location_desc"))}
             ${data.charger_configuration==="dual_ac"?"":reportRow("ההספק המותקן [kW]", v("power_kw"), "זרם מרבי [A]", v("max_current"))}
@@ -1271,6 +1273,13 @@
           ${v("approval_status")?checkerStamp():""}
         </div>
       `;
+      const wrapper=document.createElement("div");wrapper.innerHTML=html;
+      wrapper.querySelectorAll(".report-table").forEach(table=>{
+        const rows=[...table.querySelectorAll("tr")].slice(1);
+        if(!rows.length){table.remove();return;}
+        if(!rows.some(row=>[...row.querySelectorAll(".r-value")].some(cell=>cell.textContent.trim())))table.remove();
+      });
+      return wrapper.innerHTML;
     }
 
     function createReport(){
