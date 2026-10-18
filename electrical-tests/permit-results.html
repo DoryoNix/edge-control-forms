@@ -793,7 +793,7 @@
           
         </tr>
         <tr><td class="label-cell">גודל מפסק הזנת העמדה</td><td class="input-cell"><input data-field="main_feeder_breaker" placeholder="יצרן / דגם / זרם נקוב"></td><td class="label-cell">כבל הזנת העמדה</td><td class="input-cell"><input data-field="shared_feeder_cable" placeholder="לדוגמה N2XY 5x16"></td></tr>
-        <tr><td class="label-cell">צילום מפסק ההזנה לעמדה</td><td class="input-cell" colspan="3"><label class="image-box" for="feeder_photo">צילום / העלאת תמונה</label><input class="image-input" id="feeder_photo" type="file" accept="image/*" data-image-field="feeder_photo"><div class="image-preview" id="preview-feeder_photo"></div></td></tr>
+        <tr><td class="label-cell">צילום מפסק ההזנה לעמדה</td><td class="input-cell" colspan="3"><label class="image-box" for="feeder_photo">צילום / העלאת תמונה</label><input class="image-input" id="feeder_photo" type="file" accept="image/*" multiple data-image-field="feeder_photo"><div class="image-preview" id="preview-feeder_photo"></div></td></tr>
       </table>
 
       <table class="form-table" id="dual-ac-section" style="display:none">
@@ -1095,6 +1095,7 @@
             const dataUrl = await resizeImage(file);
             if(dataUrl) images[key].push(dataUrl);
           }
+          input.value = "";
           saveDraft();
           renderPreviews();
         });
@@ -1104,8 +1105,14 @@
     function renderPreviews(){
       document.querySelectorAll(".image-preview[id^='preview-']").forEach(prev => {
         const key = prev.id.slice("preview-".length);
-        prev.innerHTML = (images[key] || []).map(src => `<img src="${src}" alt="">`).join("");
+        prev.innerHTML = (images[key] || []).map((src,index) => `<div class="image-preview-item" style="display:inline-flex;flex-direction:column;gap:4px;align-items:center;margin:5px"><img src="${src}" alt="תמונה ${index+1}"><button type="button" class="btn warn" data-remove-image="${index}" data-image-key="${key}" aria-label="מחק תמונה ${index+1}" style="padding:5px 10px;min-height:32px;font-size:12px">מחק תמונה</button></div>`).join("");
       });
+    }
+    function removeImageFromDraft(key,index){
+      if(!Object.prototype.hasOwnProperty.call(images,key)||!Array.isArray(images[key])||index<0||index>=images[key].length)return;
+      images[key].splice(index,1);
+      saveDraft();
+      renderPreviews();
     }
 
     function resizeImage(file, maxSize=1280, quality=.72){
@@ -1368,6 +1375,11 @@
       fillMultiChoices();
       renderPreviews();
       bindInputs();
+      document.querySelectorAll(".image-preview").forEach(preview => preview.addEventListener("click", event => {
+        const btn=event.target.closest("button[data-remove-image]");
+        if(!btn)return;
+        removeImageFromDraft(btn.dataset.imageKey,Number(btn.dataset.removeImage));
+      }));
       syncDual();
       document.getElementById("charger_configuration").addEventListener("change",()=>{data.charger_configuration=document.getElementById("charger_configuration").value;syncDual();saveDraft()});
       bindMultiChoices();
