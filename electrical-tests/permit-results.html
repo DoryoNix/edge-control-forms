@@ -1468,7 +1468,7 @@
           }
           return idFromName(data.consumer)||"AC";
         })();
-        const filename=[shortSite,shortUnit,clean(data.date)].filter(Boolean).join(" - ")+".pdf";
+        const filename=[shortSite,clean(data.date)].filter(Boolean).join(" - ")+".pdf";
         // One explicit download action; do not call jsPDF.save(), which can trigger
         // additional save behavior in some browser integrations.
         const blob=pdf.output("blob");
