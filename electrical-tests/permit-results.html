@@ -923,7 +923,7 @@
       <div class="actions">
         <button type="button" class="btn" id="make-report" onclick="createReport(); return false;">צור / עדכן דוח</button>
         <button type="button" class="btn dark" id="print-pdf" onclick="printReport(); return false;">שמירה כ־PDF / הדפסה</button>
-        <button type="button" class="btn warn" id="clear-draft" onclick="clearDraft(); return false;">מחק טיוטה</button>
+        <button type="button" class="btn warn" id="clear-draft">מחק טיוטה</button>
       </div>
     </section>
 
@@ -999,9 +999,14 @@
       fillForm();
       fillMultiChoices();
       renderPreviews();
-      $("#report").classList.remove("show");
-      $("#report").innerHTML = "";
-      alert("הטיוטה נמחקה.");
+      document.querySelectorAll("[data-image-field]").forEach(input => { input.value = ""; });
+      document.querySelectorAll(".image-preview").forEach(preview => { preview.replaceChildren(); });
+      syncDual();
+      const report = $("#report");
+      report.classList.remove("show");
+      report.innerHTML = "";
+      const note = $("#draft-note");
+      if(note) note.textContent = "הטיוטה נמחקה.";
     }
 
     function fillForm(){
@@ -1091,11 +1096,9 @@
     }
 
     function renderPreviews(){
-      Object.keys(images).forEach(key => {
-        const prev = document.getElementById("preview-" + key);
-        if(prev){
-          prev.innerHTML = (images[key] || []).map(src => `<img src="${src}" alt="">`).join("");
-        }
+      document.querySelectorAll(".image-preview[id^='preview-']").forEach(prev => {
+        const key = prev.id.slice("preview-".length);
+        prev.innerHTML = (images[key] || []).map(src => `<img src="${src}" alt="">`).join("");
       });
     }
 
