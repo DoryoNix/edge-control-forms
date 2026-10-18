@@ -800,12 +800,12 @@
 <tr><th colspan="4">4. עמדת AC כפולה – נתונים נפרדים לכל שקע</th></tr>
 <tr><td colspan="4" style="font-size:13px;color:#555">כבל ההזנה ומפסק ההזנה הראשי משותפים לשני השקעים. יש למלא לכל שקע סריאלי, הגנה ותוצאות בדיקה נפרדות.</td></tr>
 <tr><th colspan="4">שקע 1</th></tr>
-<tr><td class="label-cell">מספר סידורי – שקע 1</td><td class="input-cell"><input data-field="dual_1_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_1_power" type="number"></td></tr>
+<tr><td class="label-cell">שם צרכן – שקע 1</td><td class="input-cell"><input data-field="dual_1_consumer"></td><td class="label-cell">מספר סידורי – שקע 1</td><td class="input-cell"><input data-field="dual_1_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_1_power" type="number"></td></tr>
 <tr><td class="label-cell">זרם נקוב (A)</td><td class="input-cell"><input data-field="dual_1_current" type="number"></td><td class="label-cell">מפסק ייעודי לשקע</td><td class="input-cell"><input data-field="dual_1_breaker"></td></tr>
 <tr><td class="label-cell">מפסק משולב פחת / RCD</td><td class="input-cell"><input data-field="dual_1_rcd" placeholder="סוג, זרם ורגישות"></td><td class="label-cell">תוצאת לולאת תקלה L-L (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_ll"></td></tr>
 <tr><td class="label-cell">תוצאת לולאת תקלה L-N (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_ln"></td><td class="label-cell">תוצאת לולאת תקלה L-PE (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_lpe"></td></tr>
 <tr><td class="label-cell">התנגדות בידוד (MΩ)</td><td class="input-cell"><input data-field="dual_1_insulation"></td><td class="label-cell">בדיקת פחת / הגנה</td><td class="input-cell"><input data-field="dual_1_rcd_test"></td></tr><tr><th colspan="4">שקע 2</th></tr>
-<tr><td class="label-cell">מספר סידורי – שקע 2</td><td class="input-cell"><input data-field="dual_2_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_2_power" type="number"></td></tr>
+<tr><td class="label-cell">שם צרכן – שקע 2</td><td class="input-cell"><input data-field="dual_2_consumer"></td><td class="label-cell">מספר סידורי – שקע 2</td><td class="input-cell"><input data-field="dual_2_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_2_power" type="number"></td></tr>
 <tr><td class="label-cell">זרם נקוב (A)</td><td class="input-cell"><input data-field="dual_2_current" type="number"></td><td class="label-cell">מפסק ייעודי לשקע</td><td class="input-cell"><input data-field="dual_2_breaker"></td></tr>
 <tr><td class="label-cell">מפסק משולב פחת / RCD</td><td class="input-cell"><input data-field="dual_2_rcd" placeholder="סוג, זרם ורגישות"></td><td class="label-cell">תוצאת לולאת תקלה L-L (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_ll"></td></tr>
 <tr><td class="label-cell">תוצאת לולאת תקלה L-N (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_ln"></td><td class="label-cell">תוצאת לולאת תקלה L-PE (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_lpe"></td></tr>
@@ -928,7 +928,7 @@
 
       <div class="actions">
         <button type="button" class="btn" id="make-report" onclick="createReport(); return false;">צור / עדכן דוח</button>
-        <button type="button" class="btn dark" id="print-pdf" onclick="printReport(); return false;">שמירה כ־PDF / הדפסה</button>
+        <button type="button" class="btn dark" id="print-pdf">שמירה כ־PDF / הדפסה</button>
         <button type="button" class="btn warn" id="clear-draft">מחק טיוטה</button>
       </div>
     </section>
@@ -1213,7 +1213,7 @@
     }
 
     function feederImageReport(){const list=images.feeder_photo||[];return list.length?'<div class="report-images">'+list.map(src=>'<img src="'+src+'" alt="מפסק הזנה">').join('')+'</div>':''}
-    function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
+    function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['שם צרכן', 'consumer'],['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
     function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const cell=el.closest("td");if(cell){cell.style.display=dual?"none":"";if(cell.previousElementSibling)cell.previousElementSibling.style.display=dual?"none":""}})}
     function buildReport(){
       const html = `
@@ -1315,9 +1315,12 @@
       return "היתר הפעלה לעמדת טעינה עם תוצאות בדיקה" + (parts.length ? " - " + parts.join(" - ") : "");
     }
 
+    let pdfGenerationInProgress=false;
     async function printReport(){
-      if(!window.html2canvas||!window.jspdf){alert("רכיב הורדת PDF לא נטען. יש לבדוק חיבור לאינטרנט.");return;}
-      if(!data.consumer||!data.date){alert("יש למלא שם צרכן ותאריך בדיקה לפני הפקת PDF.");return;}
+      if(pdfGenerationInProgress)return;
+      pdfGenerationInProgress=true;
+      if(!window.html2canvas||!window.jspdf){pdfGenerationInProgress=false;alert("רכיב הורדת PDF לא נטען. יש לבדוק חיבור לאינטרנט.");return;}
+      if(!(data.consumer||(data.charger_configuration==="dual_ac"&&(data.dual_1_consumer||data.dual_2_consumer)))||!data.date){pdfGenerationInProgress=false;alert("יש למלא שם צרכן ותאריך בדיקה לפני הפקת PDF.");return;}
       const btn=document.getElementById("print-pdf");if(btn){btn.disabled=true;btn.textContent="מכין PDF...";}
       let root;
       try{
@@ -1326,7 +1329,7 @@
         document.body.appendChild(root);
         await document.fonts.ready;
         await Promise.all([...root.querySelectorAll("img")].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;})));
-        const canvas=await window.html2canvas(root,{scale:2,backgroundColor:"#fff",useCORS:true,logging:false,windowWidth:1100});
+        const canvas=await window.html2canvas(root,{scale:3,backgroundColor:"#fff",useCORS:true,logging:false,windowWidth:1100});
         const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",compress:true});const availW=190,availH=277;
         // Prefer one readable A4 page whenever the required reduction is modest.
         const widthScale=availW/canvas.width;
@@ -1335,7 +1338,7 @@
         if(onePageFactor>=0.82){
           const w=canvas.width*widthScale*onePageFactor;
           const h=canvas.height*widthScale*onePageFactor;
-          pdf.addImage(canvas.toDataURL("image/jpeg",.94),"JPEG",(210-w)/2,10,w,h);
+          pdf.addImage(canvas.toDataURL("image/png"),"PNG",(210-w)/2,10,w,h);
         }else{
           // Split near a section/table boundary instead of cutting through photographs.
           const report=root.querySelector(".report-inner")||root;
@@ -1351,14 +1354,15 @@
             part.getContext("2d").drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
             const scale=Math.min(availW/part.width,availH/part.height);
             const w=part.width*scale,hh=part.height*scale;
-            pdf.addImage(part.toDataURL("image/jpeg",.94),"JPEG",(210-w)/2,10,w,hh);
+            pdf.addImage(part.toDataURL("image/png"),"PNG",(210-w)/2,10,w,hh);
           }
         }
         const clean=x=>String(x||"").replace(/[\\/:*?"<>|\x00-\x1f]/g,"-").trim().slice(0,80);
         const serial=data.charger_configuration==="dual_ac"?[data.dual_1_serial,data.dual_2_serial].filter(Boolean).join("_"):data.serial;
-        pdf.save([clean(data.consumer),clean(serial||"ללא-סריאלי"),clean(data.date)].join(" - ")+".pdf");
+        const client=data.charger_configuration==="dual_ac"?[data.dual_1_consumer,data.dual_2_consumer].filter(Boolean).join("_")||data.consumer:data.consumer;
+        pdf.save([clean(client),clean(serial||"ללא-סריאלי"),clean(data.date)].join(" - ")+".pdf");
       }catch(error){console.error(error);alert("נכשלה הפקת PDF. מומלץ להפחית תמונות ולנסות שוב.")}
-      finally{if(root)root.remove();if(btn){btn.disabled=false;btn.textContent="הורד PDF";}}
+      finally{pdfGenerationInProgress=false;if(root)root.remove();if(btn){btn.disabled=false;btn.textContent="הורד PDF";}}
     }
 
     window.createReport = createReport;
