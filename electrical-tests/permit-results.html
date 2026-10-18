@@ -832,27 +832,28 @@
 <tr><td class="label-cell">תמונה של עמדת טעינה מס׳ 2</td><td class="input-cell" colspan="3"><label class="image-box" for="dual_2_photo">📷 העלאת תמונות לעמדה 2</label><input class="image-input" id="dual_2_photo" type="file" accept="image/*" multiple data-image-field="dual_2_photo"><div class="image-preview" id="preview-dual_2_photo"></div></td></tr>
 </table>
 <table class="form-table">
-        <tr><th colspan="4">5. בדיקות קו ההזנה הראשי והגנות</th></tr>
+        <tr><th colspan="4">5. תוצאות בדיקת קו ההזנה</th></tr>
         <tr>
           <td class="label-cell">תוצאת לולאת תקלה L-L [Ω]</td><td class="input-cell"><input id="lt_ll" data-field="lt_ll"></td>
           <td class="label-cell">תוצאת לולאת תקלה L-N [Ω]</td><td class="input-cell"><input id="lt_ln" data-field="lt_ln"></td>
         </tr>
         <tr>
           <td class="label-cell">תוצאת לולאת תקלה L-PE [Ω]</td><td class="input-cell"><input id="lt_lpe" data-field="lt_lpe"></td>
-          <td class="label-cell">התנגדות מקסימלית מותרת [Ω]</td><td class="input-cell"><input id="max_z" data-field="max_z"></td>
+          <td class="label-cell">עכבת לולאת תקלה מרבית מותרת [Ω]</td><td class="input-cell"><input id="max_z" data-field="max_z"></td>
         </tr>
+        <tr><td class="label-cell">חישוב עכבה מרבית (אופציונלי)</td><td class="input-cell" colspan="3"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><input id="calc_u0" type="number" min="1" value="230" placeholder="מתח פאזה לאדמה V" style="max-width:170px"><input id="calc_ia" type="number" min="1" placeholder="זרם הפעלה Ia באמפר" style="max-width:170px"><button type="button" class="btn" id="calc_z_button">חשב Zs = U0 / Ia</button></div><span class="hint">יש להזין זרם המבטיח ניתוק בזמן הנדרש לפי מאפייני אמצעי ההגנה. החישוב אינו מחליף אימות מקצועי.</span></td></tr>
         <tr>
           <td class="label-cell">התנגדות בידוד מוליכים [MΩ]</td><td class="input-cell"><input id="insulation" data-field="insulation" placeholder=">999 (יש להזין תוצאה שנמדדה)"></td>
           <td class="label-cell">סוג הגנה על העמדה</td><td class="input-cell"><input id="protection" data-field="protection"></td>
         </tr>
+
+
+      </table>
+
+      <table class="form-table" id="single-rcd-tests">
+        <tr><th colspan="4">6. בדיקות פחת והגנת זרם דלף – עמדה בודדת</th></tr>
         <tr>
-          <td class="label-cell">סוג כבל וחתך נומינלי של הזנת עמדת הטעינה</td>
-          <td class="input-cell"><input id="cable" data-field="cable"></td>
-          <td class="label-cell"></td>
-          <td class="input-cell"></td>
-        </tr>
-        <tr>
-          <td class="label-cell">ממסר פחת Type A 30mA AC</td>
+          <td class="label-cell">בדיקת פחת AC 30mA</td>
           <td class="input-cell">
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
               <select id="rcd_type_a" data-field="rcd_type_a" style="flex:1;">
@@ -868,7 +869,7 @@
             </div>
           </td>
 
-          <td class="label-cell">ממסר פחת Type B 6mA DC</td>
+          <td class="label-cell">בדיקת הגנת דלף DC 6mA</td>
           <td class="input-cell">
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
               <select id="rcd_type_b" data-field="rcd_type_b" style="flex:1;">
@@ -1022,6 +1023,7 @@
       sessionStorage.removeItem(SAVE_KEY);
       data = {};
       images = {};
+      migrateLegacyCable();
       fillForm();
       fillMultiChoices();
       renderPreviews();
@@ -1272,6 +1274,7 @@
       const consumer=document.getElementById("consumer");
       if(consumer){consumer.required=!dual;consumer.closest("tr").style.display=dual?"none":"";}
       for(const id of ["rcd_type_a","rcd_type_b"]){const el=document.getElementById(id);if(el){const tr=el.closest("tr");if(tr)tr.style.display=dual?"none":"";}}
+      const singleRcd=document.getElementById("single-rcd-tests");if(singleRcd)singleRcd.style.display=dual?"none":"";
       // Shared feeder measurements stay visible for both regular chargers and double pillars.
       for(const key of ["serial","power_kw","max_current","connectors"]){
         const field=document.querySelector('[data-field="'+key+'"]');
@@ -1319,7 +1322,7 @@
           <table class="report-table">
             <tr><th colspan="4">תוצאות בדיקה</th></tr>
             ${reportRow("תוצאת לולאת תקלה L-L [Ω]", v("lt_ll"), "תוצאת לולאת תקלה L-N [Ω]", v("lt_ln"))}
-            ${reportRow("תוצאת לולאת תקלה L-PE [Ω]", v("lt_lpe"), "התנגדות מקסימלית מותרת [Ω]", v("max_z"))}
+            ${reportRow("תוצאת לולאת תקלה L-PE [Ω]", v("lt_lpe"), "עכבת לולאת תקלה מרבית מותרת [Ω]", v("max_z"))}
             ${reportRow("התנגדות בידוד מוליכים [MΩ]", v("insulation"), "סוג הגנה על העמדה", v("protection"))}
             
             ${data.charger_configuration==="dual_ac"?"":reportRow(
@@ -1454,6 +1457,22 @@
       finally{pdfGenerationInProgress=false;if(root)root.remove();if(btn){btn.disabled=false;btn.textContent="הורד PDF";}}
     }
 
+
+    function migrateLegacyCable(){
+      if(!data.shared_feeder_cable&&data.cable){
+        data.shared_feeder_cable=data.cable;
+        const input=document.querySelector('[data-field="shared_feeder_cable"]');
+        if(input)input.value=data.cable;
+      }
+    }
+    function calcMaxLoopImpedance(){
+      const voltage=Number(document.getElementById("calc_u0").value);
+      const trip=Number(document.getElementById("calc_ia").value);
+      if(!Number.isFinite(voltage)||!Number.isFinite(trip)||voltage<=0||trip<=0){alert("יש להזין מתח פאזה לאדמה וזרם הפעלה חיוביים.");return;}
+      const z=(voltage/trip).toFixed(3);
+      const field=document.getElementById("max_z");field.value=z;data.max_z=z;saveDraft();
+    }
+
     window.createReport = createReport;
     window.printReport = printReport;
     window.clearDraft = clearDraft;
@@ -1483,6 +1502,7 @@
       fillMultiChoices();
       renderPreviews();
       bindInputs();
+      document.getElementById("calc_z_button")?.addEventListener("click",calcMaxLoopImpedance);
       document.querySelectorAll(".image-preview").forEach(preview => preview.addEventListener("click", event => {
         const btn=event.target.closest("button[data-remove-image]");
         if(!btn)return;
