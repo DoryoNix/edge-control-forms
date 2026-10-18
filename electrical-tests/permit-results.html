@@ -1328,16 +1328,31 @@
         await Promise.all([...root.querySelectorAll("img")].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;})));
         const canvas=await window.html2canvas(root,{scale:2,backgroundColor:"#fff",useCORS:true,logging:false,windowWidth:1100});
         const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",compress:true});const availW=190,availH=277;
-        const pages=(canvas.height*availW/canvas.width<=availH)?1:2;
-        const slice=Math.ceil(canvas.height/pages);
-        for(let i=0;i<pages;i++){
-          const y=i*slice,h=Math.min(slice,canvas.height-y);if(!h)continue;
-          const part=document.createElement("canvas");part.width=canvas.width;part.height=h;
-          part.getContext("2d").drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
-          if(i)pdf.addPage();
-          const scale=Math.min(availW/part.width,availH/part.height);
-          const w=part.width*scale,hh=part.height*scale;
-          pdf.addImage(part.toDataURL("image/jpeg",.93),"JPEG",(210-w)/2,10,w,hh);
+        // Prefer one readable A4 page whenever the required reduction is modest.
+        const widthScale=availW/canvas.width;
+        const naturalHeight=canvas.height*widthScale;
+        const onePageFactor=Math.min(1,availH/naturalHeight);
+        if(onePageFactor>=0.82){
+          const w=canvas.width*widthScale*onePageFactor;
+          const h=canvas.height*widthScale*onePageFactor;
+          pdf.addImage(canvas.toDataURL("image/jpeg",.94),"JPEG",(210-w)/2,10,w,h);
+        }else{
+          // Split near a section/table boundary instead of cutting through photographs.
+          const report=root.querySelector(".report-inner")||root;
+          const origin=report.getBoundingClientRect().top;
+          const options=[...root.querySelectorAll(".report-table,.report-check,.report-images,.stamp-only")].map(el=>el.getBoundingClientRect().top-origin).filter(y=>y>0);
+          const desired=canvas.height/2;
+          const sourceHeight=report.getBoundingClientRect().height||root.getBoundingClientRect().height;
+          const candidates=options.map(y=>Math.round(y*canvas.height/sourceHeight)).filter(y=>y>canvas.height*.30&&y<canvas.height*.70);
+          const slice=candidates.length?candidates.reduce((best,y)=>Math.abs(y-desired)<Math.abs(best-desired)?y:best,candidates[0]):Math.round(desired);
+          for(const [y,h] of [[0,slice],[slice,canvas.height-slice]]){
+            if(y>0)pdf.addPage();
+            const part=document.createElement("canvas");part.width=canvas.width;part.height=h;
+            part.getContext("2d").drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+            const scale=Math.min(availW/part.width,availH/part.height);
+            const w=part.width*scale,hh=part.height*scale;
+            pdf.addImage(part.toDataURL("image/jpeg",.94),"JPEG",(210-w)/2,10,w,hh);
+          }
         }
         const clean=x=>String(x||"").replace(/[\\/:*?"<>|\x00-\x1f]/g,"-").trim().slice(0,80);
         const serial=data.charger_configuration==="dual_ac"?[data.dual_1_serial,data.dual_2_serial].filter(Boolean).join("_"):data.serial;
