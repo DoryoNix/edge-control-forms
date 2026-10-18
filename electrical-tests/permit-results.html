@@ -729,7 +729,7 @@
         <tr><th colspan="4">טופס היתר הפעלה לעמדת טעינה לרכב חשמלי</th></tr>
         <tr>
           <td class="label-cell">שם הצרכן</td><td class="input-cell"><input id="consumer" data-field="consumer" required></td>
-          <td class="label-cell">מספר הזמנה</td><td class="input-cell"><input id="order" data-field="order"></td>
+          <td class="label-cell">מקור הזנה / שם הלוח המזין</td><td class="input-cell"><input id="feed_source" data-field="feed_source"></td>
         </tr>
         <tr>
           <td class="label-cell">סוג הבדיקה</td>
@@ -740,6 +740,8 @@
 
       <table class="form-table">
         <tr><th colspan="4">נתונים כלליים של עמדת הטעינה</th></tr>
+        <tr><td class="label-cell">תצורת העמדה</td><td class="input-cell"><select id="charger_configuration" data-field="charger_configuration"><option value="">בחר...</option><option value="single">עמדה יחידה</option><option value="dual_ac">עמדת AC כפולה – שני שקעים</option></select></td><td class="label-cell">שיטת התקנה</td><td class="input-cell"><select id="mounting_method" data-field="mounting_method"><option value="">בחר...</option><option>על קיר</option><option>סטנד בודד</option><option>סטנד זוגי</option><option>על בסיס בטון</option></select></td></tr>
+        <tr><td class="label-cell">צילום מפסק ההזנה לעמדה</td><td class="input-cell" colspan="3"><label class="image-box" for="feeder_photo">צילום / העלאת תמונה</label><input class="image-input" id="feeder_photo" type="file" accept="image/*" data-image-field="feeder_photo"><div class="image-preview" id="preview-feeder_photo"></div></td></tr>
         <tr>
           <td class="label-cell">שם היצרן</td><td class="input-cell"><input id="manufacturer" data-field="manufacturer"></td>
           <td class="label-cell">דגם</td><td class="input-cell"><input id="model" data-field="model"></td>
@@ -785,7 +787,22 @@
       </table>
 
 
-      <table class="form-table">
+      <table class="form-table" id="dual-ac-section" style="display:none">
+<tr><th colspan="4">עמדת AC כפולה – נתונים נפרדים לכל שקע</th></tr>
+<tr><td colspan="4" style="font-size:13px;color:#555">כבל ההזנה ומפסק ההזנה הראשי משותפים לשני השקעים. יש למלא לכל שקע סריאלי, הגנה ותוצאות בדיקה נפרדות.</td></tr>
+<tr><th colspan="4">שקע 1</th></tr>
+<tr><td class="label-cell">מספר סידורי – שקע 1</td><td class="input-cell"><input data-field="dual_1_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_1_power" type="number"></td></tr>
+<tr><td class="label-cell">זרם נקוב (A)</td><td class="input-cell"><input data-field="dual_1_current" type="number"></td><td class="label-cell">מפסק ייעודי לשקע</td><td class="input-cell"><input data-field="dual_1_breaker"></td></tr>
+<tr><td class="label-cell">מפסק משולב פחת / RCD</td><td class="input-cell"><input data-field="dual_1_rcd" placeholder="סוג, זרם ורגישות"></td><td class="label-cell">תוצאת לולאת תקלה L-L (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_ll"></td></tr>
+<tr><td class="label-cell">תוצאת לולאת תקלה L-N (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_ln"></td><td class="label-cell">תוצאת לולאת תקלה L-PE (Ω)</td><td class="input-cell"><input data-field="dual_1_lt_lpe"></td></tr>
+<tr><td class="label-cell">התנגדות בידוד (MΩ)</td><td class="input-cell"><input data-field="dual_1_insulation"></td><td class="label-cell">בדיקת פחת / הגנה</td><td class="input-cell"><input data-field="dual_1_rcd_test"></td></tr><tr><th colspan="4">שקע 2</th></tr>
+<tr><td class="label-cell">מספר סידורי – שקע 2</td><td class="input-cell"><input data-field="dual_2_serial"></td><td class="label-cell">הספק נקוב (kW)</td><td class="input-cell"><input data-field="dual_2_power" type="number"></td></tr>
+<tr><td class="label-cell">זרם נקוב (A)</td><td class="input-cell"><input data-field="dual_2_current" type="number"></td><td class="label-cell">מפסק ייעודי לשקע</td><td class="input-cell"><input data-field="dual_2_breaker"></td></tr>
+<tr><td class="label-cell">מפסק משולב פחת / RCD</td><td class="input-cell"><input data-field="dual_2_rcd" placeholder="סוג, זרם ורגישות"></td><td class="label-cell">תוצאת לולאת תקלה L-L (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_ll"></td></tr>
+<tr><td class="label-cell">תוצאת לולאת תקלה L-N (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_ln"></td><td class="label-cell">תוצאת לולאת תקלה L-PE (Ω)</td><td class="input-cell"><input data-field="dual_2_lt_lpe"></td></tr>
+<tr><td class="label-cell">התנגדות בידוד (MΩ)</td><td class="input-cell"><input data-field="dual_2_insulation"></td><td class="label-cell">בדיקת פחת / הגנה</td><td class="input-cell"><input data-field="dual_2_rcd_test"></td></tr>
+</table>
+<table class="form-table">
         <tr><th colspan="4">תוצאות בדיקה</th></tr>
         <tr>
           <td class="label-cell">תוצאת לולאת תקלה L-L [Ω]</td><td class="input-cell"><input id="lt_ll" data-field="lt_ll"></td>
@@ -945,9 +962,9 @@
     function v(id){
       const value = data[id];
       if(id === "insulation" && (value === undefined || value === null || value === "")){
-        return "≥999";
+        return "";
       }
-      return value === undefined || value === null || value === "" ? "—" : value;
+      return value === undefined || value === null || value === "" ? "" : value;
     }
 
     function saveDraft(){
@@ -1001,13 +1018,13 @@
     function multiValue(field){
       const value = data[field];
       if(Array.isArray(value)) return value.join(", ");
-      return value || "—";
+      return value || "";
     }
 
     function multiValuePlus(field){
       const value = data[field];
       if(Array.isArray(value) && value.length) return value.join(" + ");
-      return value || "—";
+      return value || "";
     }
 
     function fillMultiChoices(){
@@ -1105,19 +1122,17 @@
     }
 
     function reportRow(label1, value1, label2="", value2=""){
-      return `
-        <tr>
-          <td class="r-label">${escapeHTML(label1)}</td>
-          <td class="r-value">${escapeHTML(value1)}</td>
-          <td class="r-label">${escapeHTML(label2)}</td>
-          <td class="r-value">${escapeHTML(value2)}</td>
-        </tr>
-      `;
+      const present=x=>x!==undefined&&x!==null&&String(x).trim()!==''&&x!=='—';
+      const pairs=[[label1,value1],[label2,value2]].filter(([k,val])=>k&&present(val));
+      if(!pairs.length)return '';
+      if(pairs.length===1)return '<tr><td class="r-label">'+escapeHTML(pairs[0][0])+'</td><td class="r-value" colspan="3">'+escapeHTML(pairs[0][1])+'</td></tr>';
+      return '<tr>'+pairs.map(([k,val])=>'<td class="r-label">'+escapeHTML(k)+'</td><td class="r-value">'+escapeHTML(val)+'</td>').join('')+'</tr>';
+
     }
 
     function standardText(){
       const selected = v("standard_doc");
-      const display = selected === "—" ? "לא נבחר" : selected;
+      if(!selected)return ""; const display=selected;
 
       return `
         <div class="report-check">
@@ -1130,7 +1145,7 @@
     function approvalText(){
       const selected = v("approval_status");
 
-      let approvalTextValue = "לא נבחר";
+      let approvalTextValue = "";
       if(selected === "מאושר לחיבור"){
         approvalTextValue = "הנני מאשר בזאת שמערכת הטעינה נבדקה ונמצא כי היא עומדת בדרישות חוק החשמל ותקנותיו וכן בהנחיות שנקבעו על ידי מנהל מינהל החשמל, ובהתאם לכך הנני מאשר לחבר אותה לרשת חשמל.";
       }else if(selected === "לא מאושר לחיבור"){
@@ -1140,9 +1155,9 @@
       return `
         <div class="report-check">
           <strong>הצהרת בעל רישיון חשמלאי בודק:</strong>
-          √ ${escapeHTML(approvalTextValue)}<br>
+          ${approvalTextValue?("√ "+escapeHTML(approvalTextValue)+"<br>"):""}
           <strong style="display:block;margin-top:4px;">ליקויים / הערות הבודק:</strong>
-          ${escapeHTML(v("defects"))}<br>
+          ${v("defects")?escapeHTML(v("defects"))+"<br>":""}
           <span style="font-size:11.5px;">
             * היתר ההפעלה בכפוף להצגת אישור יבואן / יצרן בגין אישור עמידה בתקנים הנדרשים.<br>
             * היתר ההפעלה תקף לשנה אחת בלבד.
@@ -1177,6 +1192,9 @@
       return status + integralText;
     }
 
+    function feederImageReport(){const list=images.feeder_photo||[];return list.length?'<div class="report-images">'+list.map(src=>'<img src="'+src+'" alt="מפסק הזנה">').join('')+'</div>':''}
+    function dualReport(){if(data.charger_configuration!=="dual_ac")return '';return [1,2].map(n=>{const fields=[['מספר סידורי', 'serial'],['הספק נקוב (kW)','power'],['זרם נקוב (A)','current'],['מפסק ייעודי','breaker'],['מפסק משולב פחת / RCD','rcd'],['לולאת תקלה L-L (Ω)','lt_ll'],['לולאת תקלה L-N (Ω)','lt_ln'],['לולאת תקלה L-PE (Ω)','lt_lpe'],['התנגדות בידוד (MΩ)','insulation'],['בדיקת פחת / הגנה','rcd_test']];const rows=fields.map(([label,key])=>reportRow(label,v('dual_'+n+'_'+key))).join('');return rows?'<table class="report-table"><tr><th colspan="4">תוצאות בדיקה – שקע '+n+'</th></tr>'+rows+'</table>':''}).join('')}
+    function syncDual(){const dual=data.charger_configuration==="dual_ac";const el=document.getElementById("dual-ac-section");if(el)el.style.display=dual?"table":"none";document.querySelectorAll('[data-field="serial"],[data-field="power_kw"],[data-field="max_current"],[data-field="lt_ll"],[data-field="lt_ln"],[data-field="lt_lpe"],[data-field="insulation"],[data-field="rcd_type_a"],[data-field="rcd_type_b"]').forEach(el=>{const row=el.closest("tr");if(row)row.style.display=dual?"none":""})}
     function buildReport(){
       return `
         <div class="report-inner" id="pdf-report">
@@ -1195,29 +1213,30 @@
 
           <table class="report-table">
             <tr><th colspan="4">פרטים כלליים</th></tr>
-            ${reportRow("שם הצרכן", v("consumer"), "מספר הזמנה", v("order"))}
+            ${reportRow("שם הצרכן", v("consumer"), "מקור הזנה / לוח מזין", v("feed_source"))}
             ${reportRow("סוג הבדיקה", v("inspection_type"), "תאריך הבדיקה", v("date"))}
           </table>
 
           <table class="report-table">
             <tr><th colspan="4">נתונים כלליים של עמדת הטעינה</th></tr>
             ${reportRow("שם היצרן", v("manufacturer"), "דגם", v("model"))}
-            ${reportRow("סריאלי", v("serial"), "כתובת התקנת עמדת הטעינה", v("address"))}
-            <tr><td class="r-label">תיאור מקום ההתקנה</td><td class="r-value" colspan="3">${escapeHTML(v("location_desc"))}</td></tr>
-            ${reportRow("ההספק המותקן [kW]", v("power_kw"), "זרם מרבי [A]", v("max_current"))}
+            ${reportRow("תצורת העמדה", data.charger_configuration==="dual_ac"?"AC כפולה – שני שקעים":data.charger_configuration==="single"?"עמדה יחידה":"", "שיטת התקנה", v("mounting_method"))}
+            ${reportRow("סריאלי",data.charger_configuration==="dual_ac"?"":v("serial"), "כתובת התקנת עמדת הטעינה", v("address"))}
+            ${reportRow("תיאור מקום ההתקנה",v("location_desc"))}
+            ${data.charger_configuration==="dual_ac"?"":reportRow("ההספק המותקן [kW]", v("power_kw"), "זרם מרבי [A]", v("max_current"))}
             ${reportRow("גודל הלוח שאליו מחוברת העמדה [A]", v("board_size"), "מספר מחברים", v("connectors"))}
             ${reportRow("סוג ומחבר הטעינה", multiValuePlus("charging_connector"), "", "")}
-            <tr><td class="r-label">תיאור נקודות החיבור בעמדה</td><td class="r-value" colspan="3">${escapeHTML(v("connector_desc"))}</td></tr>
+            ${reportRow("תיאור נקודות החיבור בעמדה",v("connector_desc"))}
           </table>
 
 
           <table class="report-table">
             <tr><th colspan="4">תוצאות בדיקה</th></tr>
-            ${reportRow("תוצאת לולאת תקלה L-L [Ω]", v("lt_ll"), "תוצאת לולאת תקלה L-N [Ω]", v("lt_ln"))}
-            ${reportRow("תוצאת לולאת תקלה L-PE [Ω]", v("lt_lpe"), "התנגדות מקסימלית מותרת [Ω]", v("max_z"))}
-            ${reportRow("התנגדות בידוד מוליכים [MΩ]", v("insulation"), "סוג הגנה על העמדה", v("protection"))}
+            ${data.charger_configuration==="dual_ac"?"":reportRow("תוצאת לולאת תקלה L-L [Ω]", v("lt_ll"), "תוצאת לולאת תקלה L-N [Ω]", v("lt_ln"))}
+            ${data.charger_configuration==="dual_ac"?reportRow("התנגדות מקסימלית מותרת [Ω]",v("max_z")):reportRow("תוצאת לולאת תקלה L-PE [Ω]", v("lt_lpe"), "התנגדות מקסימלית מותרת [Ω]", v("max_z"))}
+            ${data.charger_configuration==="dual_ac"?reportRow("סוג הגנה ראשית",v("protection")):reportRow("התנגדות בידוד מוליכים [MΩ]", v("insulation"), "סוג הגנה על העמדה", v("protection"))}
             ${reportRow("סוג כבל וחתך נומינלי של הזנת עמדת הטעינה", v("cable"), "", "")}
-            ${reportRow(
+            ${data.charger_configuration==="dual_ac"?"":reportRow(
               "ממסר פחת Type A 30mA AC",
               formatRCD("rcd_type_a","rcd_type_a_integral"),
               "ממסר פחת Type B 6mA DC",
@@ -1225,6 +1244,8 @@
             )}
           </table>
 
+          ${dualReport()}
+          ${feederImageReport()}
           ${standardText()}
           ${imageReport()}
 
@@ -1320,7 +1341,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       loadDraft();
-      if(!data.insulation) data.insulation = "≥999";
+      
 
       if(!Array.isArray(data.charging_connector) || !data.charging_connector.length){
         const oldType = Array.isArray(data.connector_type) ? data.connector_type : [];
@@ -1334,6 +1355,8 @@
       fillMultiChoices();
       renderPreviews();
       bindInputs();
+      syncDual();
+      document.getElementById("charger_configuration").addEventListener("change",()=>{data.charger_configuration=document.getElementById("charger_configuration").value;syncDual();saveDraft()});
       bindMultiChoices();
 
       const makeBtn = document.getElementById("make-report");
