@@ -1043,20 +1043,21 @@
       });
     }
 
-    function reportRow(label1, value1, label2="", value2=""){
-      return `
-        <tr>
-          <td class="r-label">${escapeHTML(label1)}</td>
-          <td class="r-value">${escapeHTML(value1)}</td>
-          <td class="r-label">${escapeHTML(label2)}</td>
-          <td class="r-value">${escapeHTML(value2)}</td>
-        </tr>
-      `;
+    function hasReportValue(value){
+      return value!==undefined&&value!==null&&String(value).trim()!==""&&String(value).trim()!=="—"&&String(value).trim()!=="לא נבחר";
     }
+    function reportRow(label1,value1,label2="",value2=""){
+      const pairs=[[label1,value1],[label2,value2]].filter(([label,value])=>label&&hasReportValue(value));
+      if(!pairs.length)return "";
+      if(pairs.length===1)return '<tr><td class="r-label">'+escapeHTML(pairs[0][0])+'</td><td class="r-value" colspan="3">'+escapeHTML(pairs[0][1])+'</td></tr>';
+      return '<tr>'+pairs.map(([label,value])=>'<td class="r-label">'+escapeHTML(label)+'</td><td class="r-value">'+escapeHTML(value)+'</td>').join("")+'</tr>';
+    }
+    function singleReportRow(label,value){return reportRow(label,value);}
 
     function standardText(){
       const selected = v("standard_doc");
-      const display = selected === "—" ? "לא נבחר" : selected;
+      if(!hasReportValue(selected))return "";
+      const display=selected;
 
       return `
         <div class="report-check">
@@ -1069,19 +1070,19 @@
     function approvalText(){
       const selected = v("approval_status");
 
-      let approvalTextValue = "לא נבחר";
+      let approvalTextValue = "";
       if(selected === "מאושר לחיבור"){
         approvalTextValue = "הנני מאשר בזאת שמערכת הטעינה נבדקה ונמצא כי היא עומדת בדרישות חוק החשמל ותקנותיו וכן בהנחיות שנקבעו על ידי מנהל מינהל החשמל, ובהתאם לכך הנני מאשר לחבר אותה לרשת חשמל.";
       }else if(selected === "לא מאושר לחיבור"){
         approvalTextValue = "המערכת לא הותקנה כנדרש בחוק, בתקנות ובהנחיות, והיא לא מאושרת לחיבור עד לתיקון הליקויים המפורטים בדו״ח הבדיקה.";
       }
 
+      if(!approvalTextValue&&!hasReportValue(v("defects")))return "";
       return `
         <div class="report-check">
           <strong>הצהרת בעל רישיון חשמלאי בודק:</strong>
-          √ ${escapeHTML(approvalTextValue)}<br>
-          <strong style="display:block;margin-top:4px;">ליקויים / הערות הבודק:</strong>
-          ${escapeHTML(v("defects"))}<br>
+          ${approvalTextValue?"√ "+escapeHTML(approvalTextValue)+"<br>":""}
+          ${hasReportValue(v("defects"))?'<strong style="display:block;margin-top:4px;">ליקויים / הערות הבודק:</strong>'+escapeHTML(v("defects"))+"<br>":""}
           <span style="font-size:11.5px;">
             * היתר ההפעלה בכפוף להצגת אישור יבואן / יצרן בגין אישור עמידה בתקנים הנדרשים.<br>
             * היתר ההפעלה תקף לשנה אחת בלבד.
@@ -1112,7 +1113,7 @@
     }
 
     function buildReport(){
-      return `
+      const html=`
         <div class="report-inner" id="pdf-report">
           <div class="report-header">
             <div class="company">
@@ -1137,11 +1138,11 @@
             <tr><th colspan="4">נתונים כלליים של עמדת הטעינה</th></tr>
             ${reportRow("שם היצרן", v("manufacturer"), "דגם", v("model"))}
             ${reportRow("סריאלי", v("serial"), "כתובת התקנת עמדת הטעינה", v("address"))}
-            <tr><td class="r-label">תיאור מקום ההתקנה</td><td class="r-value" colspan="3">${escapeHTML(v("location_desc"))}</td></tr>
+            ${singleReportRow("תיאור מקום ההתקנה",v("location_desc"))}
             ${reportRow("ההספק המותקן [kW]", v("power_kw"), "זרם מרבי [A]", v("max_current"))}
             ${reportRow("גודל הלוח שאליו מחוברת העמדה [A]", v("board_size"), "מספר מחברים", v("connectors"))}
             ${reportRow("סוג ומחבר הטעינה", multiValuePlus("charging_connector"), "", "")}
-            <tr><td class="r-label">תיאור נקודות החיבור בעמדה</td><td class="r-value" colspan="3">${escapeHTML(v("connector_desc"))}</td></tr>
+            ${singleReportRow("תיאור נקודות החיבור בעמדה",v("connector_desc"))}
           </table>
 
           ${standardText()}
@@ -1166,6 +1167,13 @@
           ${checkerStamp()}
         </div>
       `;
+      const holder=document.createElement("div");
+      holder.innerHTML=html;
+      holder.querySelectorAll(".report-table").forEach(table=>{
+        const rows=[...table.querySelectorAll("tr")].slice(1);
+        if(!rows.some(row=>[...row.querySelectorAll(".r-value")].some(cell=>hasReportValue(cell.textContent))))table.remove();
+      });
+      return holder.innerHTML;
     }
 
     function createReport(){
