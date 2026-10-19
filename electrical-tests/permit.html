@@ -699,7 +699,17 @@
       justify-content:flex-start;
     }
 
-  </style>
+    .preview-photo-item{display:inline-flex;flex-direction:column;align-items:center;gap:5px;margin:4px}
+    .preview-photo-item .btn{font-size:12px;padding:5px 9px;min-height:30px}
+    .pdf-photo-table{width:100%;table-layout:fixed;border-spacing:5px;margin:5px 0;direction:rtl}
+    .pdf-photo-cell{width:33.333%;vertical-align:top;border:1px solid #d9dde3;padding:5px;text-align:center}
+    .pdf-photo-caption{min-height:26px;position:relative;font-size:12px;font-weight:900;direction:rtl;line-height:1.35;padding-bottom:5px}
+    .pdf-photo-frame{height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .pdf-photo-frame img{max-width:100%!important;max-height:155px!important;width:auto!important;height:auto!important;object-fit:contain!important}
+    .pdf-photos .photos-title{background:#050505;color:white;text-align:right;font-weight:900;padding:5px 9px}
+    </style>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -837,8 +847,8 @@
 
       <div class="actions">
         <button type="button" class="btn" id="make-report" onclick="createReport(); return false;">צור / עדכן דוח</button>
-        <button type="button" class="btn dark" id="print-pdf" onclick="printReport(); return false;">שמירה כ־PDF / הדפסה</button>
-        <button type="button" class="btn warn" id="clear-draft" onclick="clearDraft(); return false;">מחק טיוטה</button>
+        <button type="button" class="btn dark" id="print-pdf">שמירה כ־PDF / הדפסה</button>
+        <button type="button" class="btn warn" id="clear-draft">מחק טיוטה</button>
       </div>
     </section>
 
@@ -911,9 +921,10 @@
       fillForm();
       fillMultiChoices();
       renderPreviews();
+      document.querySelectorAll("[data-image-field]").forEach(input=>input.value="");
       $("#report").classList.remove("show");
       $("#report").innerHTML = "";
-      alert("הטיוטה נמחקה.");
+      const note=$("#draft-note");if(note)note.textContent="הטיוטה נמחקה.";
     }
 
     function fillForm(){
@@ -984,6 +995,7 @@
             const dataUrl = await resizeImage(file);
             if(dataUrl) images[key].push(dataUrl);
           }
+          input.value="";
           saveDraft();
           renderPreviews();
         });
@@ -991,15 +1003,22 @@
     }
 
     function renderPreviews(){
-      Object.keys(images).forEach(key => {
-        const prev = document.getElementById("preview-" + key);
-        if(prev){
-          prev.innerHTML = (images[key] || []).map(src => `<img src="${src}" alt="">`).join("");
-        }
+      document.querySelectorAll(".image-preview[id^='preview-']").forEach(prev=>{
+        const key=prev.id.slice(8);
+        prev.innerHTML=(images[key]||[]).map((src,index)=>
+          '<div class="preview-photo-item"><img src="'+src+'" alt="תמונה '+(index+1)+'">'+
+          '<button type="button" class="btn warn" data-photo-key="'+key+'" data-photo-index="'+index+'">מחק תמונה</button></div>'
+        ).join("");
       });
     }
+    function deleteImage(key,index){
+      if(!Array.isArray(images[key])||index<0||index>=images[key].length)return;
+      images[key].splice(index,1);
+      renderPreviews();
+      saveDraft();
+    }
 
-    function resizeImage(file, maxSize=1280, quality=.72){
+    function resizeImage(file, maxSize=2048, quality=.9){
       return new Promise(resolve => {
         const reader = new FileReader();
         reader.onload = event => {
@@ -1072,13 +1091,16 @@
     }
 
     function imageReport(){
-      const list = images.charger_photo || [];
-      if(!list.length) return "";
-      return `
-        <div class="report-images">
-          ${list.map(src => `<img src="${src}" alt="">`).join("")}
-        </div>
-      `;
+      const list=images.charger_photo||[];
+      if(!list.length)return "";
+      const cells=list.map(src=>'<td class="pdf-photo-cell"><div class="pdf-photo-caption">תמונה של עמדת הטעינה</div><div class="pdf-photo-frame"><img src="'+src+'" alt="תמונה של עמדת הטעינה"></div></td>');
+      const rows=[];
+      for(let i=0;i<cells.length;i+=3){
+        const row=cells.slice(i,i+3);
+        while(row.length<3)row.push('<td class="pdf-photo-cell empty"></td>');
+        rows.push('<table class="pdf-photo-table"><tr>'+row.join('')+'</tr></table>');
+      }
+      return '<section class="pdf-photos"><div class="photos-title">תיעוד מצולם</div>'+rows.join('')+'</section>';
     }
 
     function checkerStamp(){
@@ -1159,42 +1181,58 @@
       return "היתר הפעלה לעמדת טעינה" + (parts.length ? " - " + parts.join(" - ") : "");
     }
 
-    function printReport(){
-      if(!$("#report").classList.contains("show")) createReport();
-      const win = window.open("", "_blank");
-      if(!win){
-        alert("הדפדפן חסם את חלון ההדפסה. יש לאפשר Popups.");
-        return;
-      }
-      win.document.open();
-      win.document.write(`
-        <!DOCTYPE html>
-        <html dir="rtl" lang="he">
-        <head>
-          <meta charset="UTF-8"><meta name="viewport" content="width=1024, initial-scale=1.0">
-          <title>${escapeHTML(fileBase())}</title>
-          <style>${document.querySelector("style").innerHTML}</style>
-        </head>
-        <body>
-          <section class="report show">${buildReport()}</section>
-          <script>
-            function doPrint(){ window.focus(); window.print(); }
-            var imgs = Array.from(document.images || []);
-            if(!imgs.length){ setTimeout(doPrint, 400); }
-            else{
-              var left = imgs.length;
-              var done = function(){ left--; if(left <= 0) setTimeout(doPrint, 250); };
-              imgs.forEach(function(img){
-                if(img.complete) done();
-                else{ img.onload = done; img.onerror = done; }
-              });
-              setTimeout(doPrint, 1500);
-            }
-          <\/script>
-        </body>
-        </html>
-      `);
-      win.document.close();
+    let generatingPdf=false;
+    let lastPdfAt=0;
+    async function printReport(){
+      if(generatingPdf||Date.now()-lastPdfAt<3000)return;
+      generatingPdf=true;lastPdfAt=Date.now();
+      const btn=document.getElementById("print-pdf");
+      if(btn){btn.disabled=true;btn.textContent="מכין PDF...";}
+      let root;
+      try{
+        if(!window.html2canvas||!window.jspdf)throw Error("ספריית PDF לא נטענה");
+        root=document.createElement("div");
+        root.innerHTML=buildReport();
+        root.style.cssText="position:fixed;top:0;left:-20000px;width:780px;background:#fff;padding:12px;direction:rtl;font-family:Heebo,Arial,sans-serif";
+        document.body.appendChild(root);
+        // Add temporary PDF-specific styling without modifying the on-screen form.
+        const rules=document.createElement("style");
+        rules.textContent=".report-inner{font-size:12px!important;line-height:1.25!important}.report-header{margin-bottom:5px!important;padding-bottom:5px!important}.report-logo{width:105px!important;max-width:105px!important}.report-title{font-size:17px!important;margin:5px 0!important}.report-table{margin:4px 0!important}.report-table th,.report-table td{padding:3px 5px!important;line-height:1.3!important}.report-check{margin:5px 0!important;padding:5px!important}.pdf-photo-table{margin:4px 0!important}.pdf-photo-frame{height:135px!important}.pdf-photo-frame img{max-height:130px!important}.stamp-only img{max-height:70px!important}";
+        root.prepend(rules);
+        await document.fonts.ready;
+        await Promise.all([...root.querySelectorAll("img")].map(im=>im.complete?Promise.resolve():new Promise(resolve=>{im.onload=resolve;im.onerror=resolve;})));
+        const canvas=await html2canvas(root,{scale:3,backgroundColor:"#fff",useCORS:true,logging:false,windowWidth:1100});
+        const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",compress:true});
+        const availW=190,availH=277;
+        const factor=Math.min(1,availH/(canvas.height*availW/canvas.width));
+        if(factor>=.78){
+          const w=availW*factor,h=canvas.height*w/canvas.width;
+          pdf.addImage(canvas.toDataURL("image/png"),"PNG",(210-w)/2,10,w,h);
+        }else{
+          const report=root.querySelector(".report-inner")||root;
+          const origin=report.getBoundingClientRect().top;
+          const h0=report.getBoundingClientRect().height||root.getBoundingClientRect().height;
+          const cuts=[...root.querySelectorAll(".report-table,.report-check,.pdf-photos,.stamp-only")].map(el=>Math.round((el.getBoundingClientRect().top-origin)*canvas.height/h0)).filter(y=>y>canvas.height*.3&&y<canvas.height*.7);
+          const middle=canvas.height/2;
+          const cut=cuts.length?cuts.reduce((best,y)=>Math.abs(y-middle)<Math.abs(best-middle)?y:best,cuts[0]):Math.round(middle);
+          for(const [y,h] of [[0,cut],[cut,canvas.height-cut]]){
+            if(y)pdf.addPage();
+            const part=document.createElement("canvas");part.width=canvas.width;part.height=h;
+            part.getContext("2d").drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+            const sc=Math.min(availW/part.width,availH/part.height);
+            const w=part.width*sc,hh=part.height*sc;
+            pdf.addImage(part.toDataURL("image/png"),"PNG",(210-w)/2,10,w,hh);
+          }
+        }
+        const name=String(data.consumer||"אישור-הפעלה").replace(/[\\/:*?"<>|\x00-\x1f]/g,"-").trim().slice(0,60);
+        const date=String(data.date||new Date().toISOString().slice(0,10));
+        const blob=pdf.output("blob");
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement("a");a.href=url;a.download=name+" - "+date+".pdf";
+        document.body.appendChild(a);a.click();a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),60000);
+      }catch(error){console.error(error);alert("לא ניתן להפיק PDF: "+error.message);}
+      finally{root?.remove();generatingPdf=false;if(btn){btn.disabled=false;btn.textContent="הורד PDF";}}
     }
 
     window.createReport = createReport;
@@ -1210,6 +1248,7 @@
       bindMultiChoices();
       $("#make-report").addEventListener("click", createReport);
       $("#print-pdf").addEventListener("click", printReport);
+      document.querySelectorAll(".image-preview").forEach(preview=>preview.addEventListener("click",event=>{const button=event.target.closest("button[data-photo-key]");if(button)deleteImage(button.dataset.photoKey,Number(button.dataset.photoIndex));}));
       $("#clear-draft").addEventListener("click", clearDraft);
       window.addEventListener("beforeunload", saveDraft);
       window.addEventListener("pagehide", saveDraft);
